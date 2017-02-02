@@ -1,0 +1,232 @@
+<?php $this->extend('form_row'); ?>
+
+<?php $this->block('field'); ?>
+
+<?php // init Vars
+$calendarID = 'calendarWrapper';
+$reservationID = 'reservationList';
+
+$calendarMustacheID = 'calendarMustache';
+$reservationMustacheID = 'reservationMustache';
+?>
+<label><?= $this->label ?></label>
+<input type="hidden" name="<?= $this->name ?>" value="<?= $this->FormToken ?>" required>
+<div id="<?= $calendarID ?>"></div>
+<div class="loadingContainer"></div>
+<ul id="<?= $reservationID ?>">
+</ul>
+<?php $GLOBALS['TL_CSS'][] = 'system/modules/calendarbookingajax/assets/calendarbooking_ajax.css'; ?>
+<script type="text/template" id="<?= $calendarMustacheID ?>">
+    <table class="table">
+        <thead class="daylist">
+        <tr class="row_0 days">
+            <th colspan="2" class="head prev"><a data-id="<%prev.id%>" class="prev">&lt; <%prev.label%></a></th>
+            <th colspan="3" class="head current"><%current.label%></th>
+            <th colspan="2" class="head next"><a data-id="<%next.id%>" class="next"><%next.label%> &gt;</a></th>
+        </tr>
+        <tr class="row_1 days">
+            <th class="label">Mo</th>
+            <th class="label">Di</th>
+            <th class="label">Mi</th>
+            <th class="label">Do</th>
+            <th class="label">Fr</th>
+            <th class="label weekend">Sa</th>
+            <th class="label weekend">So</th>
+        </tr>
+        </thead>
+        <tbody><?php for( $i=0; $i <= 5; $i++) : ?><?= "<%#week_".$i."%>"; ?>
+            <tr class="week"><?php for($j=1; $j <= 7; $j++) : ?>
+                <td class="<%col_<?= $j ?>.class%>"><div class="inside" data-id="<%col_<?= $j ?>.day%>"><%col_<?= $j ?>.label%></div></td>
+                <?php endfor; ?>
+            </tr><?= "<%/week_".$i."%>";?><?php endfor; ?>
+        </tbody>
+    </table>
+</script>
+<script type="text/template" id="<?= $reservationMustacheID ?>">
+    <li data-id="<%id%>"><span class="datum"><%datum%></span><%#options%><%{option}%><%/options%><button type="button" data-id="<%id%>" class="remove">&times;</button></li>
+</script>
+<script src="system/modules/calendarbookingajax/assets/mustache.min.js"></script>
+<script>
+    var url = "system/modules/calendarbookingajax/public/formAjax.php";
+    var calTemp = $('#<?= $calendarMustacheID ?>').html();
+    var resTemp = $('#<?= $reservationMustacheID ?>').html();
+
+    $sheet  = $('#<?= $calendarID ?>');
+    $resList = $('#<?= $reservationID ?>');
+
+    var baseData = {
+        'rt': '<?php echo \Requesttoken::get(); ?>',
+        'ft': '<?= $this->FormToken ?>'
+    };
+    Mustache.tags = [ '<%','%>'];
+
+    $(function() {
+        var sendAction = {
+            'action' : 'initialLoad'
+        };
+        sendAjax(sendAction);
+        loadReservations();
+    });
+
+    function sendAjax(sa) {
+        var sendAction = $.extend(sa,baseData);
+        $.ajax({
+            type: "post",
+            url : url,
+            data: sendAction,
+            success: function(response) {
+                var rendered = Mustache.render(calTemp,response);
+                $sheet.html(rendered);
+            },
+            error: function(xhr, error) {
+                console.log('Error', error);
+                console.log('XHR', xhr);
+                location.reload();
+            }
+        });
+    }
+    function loadReservations() {
+        var sa = {
+            'action': 'loadReservations'
+        };
+        var sendAction = $.extend(sa,baseData);
+        $.ajax({
+            type: "post",
+            url : url,
+            data: sendAction,
+            success: function(response) {
+                $.each(response, function(i, data) {
+                    appendReservation(data);
+                });
+            },
+            error: function(xhr, error) {
+                console.log('Error', error);
+                console.log('XHR', xhr);
+                location.reload();
+            }
+        });
+    }
+    function appendReservation(response) {
+        console.log(response);
+        $resList.append(Mustache.render(resTemp, response));
+    }
+
+    $sheet.delegate('.prev' , 'click',  function () {
+        var $a = $(this).closest('a');
+        var sendAction = {
+            'action' : 'prev',
+            'data-id' : $a.attr('data-id')
+        };
+        sendAjax(sendAction);
+    });
+
+    $sheet.delegate('.next' , 'click',  function () {
+        var $a = $(this).closest('a');
+        var sendAction = {
+            'action' : 'next',
+            'data-id' : $a.attr('data-id')
+        };
+        sendAjax(sendAction);
+    });
+
+    $sheet.delegate('.days.empty' , 'click',  function () {
+        var self = $(this);
+        var $td = self.closest('td');
+        var dataID = self.find('div.inside').attr('data-id');
+        var addRes = {
+            'action' : 'addReservation',
+            'data-id' : dataID
+        };
+        var sendAction = $.extend(addRes, baseData);
+        $.ajax({
+            type: "post",
+            url : url,
+            data: sendAction,
+            success: function(response) {
+                appendReservation(response);
+                $td.removeClass('empty').addClass('selected');
+            },
+            error: function(xhr, error) {
+                console.log('Error', error);
+                console.log('XHR', xhr);
+            }
+        });
+    });
+
+    $sheet.delegate('.days.selected' , 'click',  function () {
+        var self = $(this);
+        var $td = self.closest('td');
+        var dataID = self.find('div.inside').attr('data-id');
+        var rmRes = {
+            'action' : 'rmReservation',
+            'data-id' : dataID
+        };
+        var sendAction = $.extend(rmRes, baseData);
+        $.ajax({
+            type: "post",
+            url : url,
+            data: sendAction,
+            success: function(response) {
+                $($resList).find("[data-id='" + response + "']").remove();
+                $td.removeClass('selected').addClass('empty');
+            },
+            error: function(xhr, error) {
+                console.log('Error', error);
+                console.log('XHR', xhr);
+            }
+        });
+    });
+
+    $resList.delegate('.remove', 'click', function () {
+        var self = $(this);
+        var $li = self.closest('li');
+        var dataID = self.attr('data-id');
+        var rmRes = {
+            'action' : 'rmReservation',
+            'data-id' : dataID
+        };
+        var sendAction = $.extend(rmRes, baseData);
+        $.ajax({
+            type: "post",
+            url : url,
+            data: sendAction,
+            success: function(response) {
+                $li.remove();
+                $($sheet).find("[data-id='" + response + "']").closest('td').removeClass('selected').addClass('empty');
+             },
+            error: function(xhr, error) {
+                console.log('Error', error);
+                console.log('XHR', xhr);
+            }
+        });
+    });
+
+    $resList.delegate('.option', 'change', function () {
+        var self = $(this);
+        var $li = self.closest('li');
+        var dataID = $li.attr('data-id');
+        var value = self.val();
+        var rmRes = {
+            'action' : 'rmReservation'
+        };
+        console.log(value);
+        console.log(dataID);
+        /*
+        var sendAction = $.extend(rmRes, baseData);
+        $.ajax({
+            type: "post",
+            url : url,
+            data: sendAction,
+            success: function(response) {
+                $li.remove();
+                $($sheet).find("[data-id='" + response + "']").closest('td').removeClass('selected').addClass('empty');
+            },
+            error: function(xhr, error) {
+                console.log('Error', error);
+                console.log('XHR', xhr);
+            }
+        });*/
+    });
+</script>
+
+<?php $this->endblock(); ?>
