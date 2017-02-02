@@ -50,38 +50,33 @@ class formAjax extends \Frontend
     {
         try {
 
-            parse_str(file_get_contents("php://input"), $input);
+            //parse_str(file_get_contents("php://input"), $input);
 
             $objResModel = new \CalendarBookingAjax\ModuleCalendarBookingAjax();
 
-            if( (\Input::post('rt') == \RequestToken::get() ) && ( true == $objResModel->checkFT(\Input::post('ft')) ) )
+            if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft'))))
             {
-
                 switch(\Input::post('action'))
                 {
                     case 'initialLoad' :
-                        $response = $objResModel->getCalanderSheet(\Input::post('ft'));
+                        $response = $objResModel->getCalanderSheet();
                         break;
                     case 'loadReservations' :
-                        $response = $objResModel->getReservations(\Input::post('ft'));
+                        $response = $objResModel->getReservations();
                         break;
                     case 'prev' :
-                        $response = $objResModel->changeMonth(\Input::post('ft'));
-                        break;
                     case 'next' :
-                        $response = $objResModel->changeMonth(\Input::post('ft'));
-                        break;
                     case 'goto' :
-                        $response = $objResModel->changeMonth(\Input::post('ft'));
+                        $response = $objResModel->changeMonth();
                         break;
                     case 'addReservation' :
-                        $response = $objResModel->addReservation(\Input::post('ft'));
+                        $response = $objResModel->addReservation();
                         break;
                     case 'rmReservation' :
-                        $response = $objResModel->rmReservation(\Input::post('ft'));
+                        $response = $objResModel->rmReservation();
                         break;
                     case 'changeOption' :
-                        $response = $objResModel->changeOption(\Input::post('ft'));
+                        $response = $objResModel->changeOption();
                         break;
                 }
                 header('HTTP/1.0 200 OK');

@@ -107,11 +107,10 @@ $reservationMustacheID = 'reservationMustache';
         });
     }
     function appendReservation(response) {
-        console.log(response);
         $resList.append(Mustache.render(resTemp, response));
     }
 
-    $sheet.delegate('.prev' , 'click',  function () {
+    $sheet.delegate('a.prev', 'click', function () {
         var $a = $(this).closest('a');
         var sendAction = {
             'action' : 'prev',
@@ -120,7 +119,7 @@ $reservationMustacheID = 'reservationMustache';
         sendAjax(sendAction);
     });
 
-    $sheet.delegate('.next' , 'click',  function () {
+    $sheet.delegate('a.next', 'click', function () {
         var $a = $(this).closest('a');
         var sendAction = {
             'action' : 'next',
@@ -129,7 +128,7 @@ $reservationMustacheID = 'reservationMustache';
         sendAjax(sendAction);
     });
 
-    $sheet.delegate('.days.empty' , 'click',  function () {
+    $sheet.delegate('.bookable', 'click', function () {
         var self = $(this);
         var $td = self.closest('td');
         var dataID = self.find('div.inside').attr('data-id');
@@ -137,14 +136,16 @@ $reservationMustacheID = 'reservationMustache';
             'action' : 'addReservation',
             'data-id' : dataID
         };
+        if (dataID)
         var sendAction = $.extend(addRes, baseData);
         $.ajax({
             type: "post",
             url : url,
             data: sendAction,
             success: function(response) {
+                if (response == 'false') return;
                 appendReservation(response);
-                $td.removeClass('empty').addClass('selected');
+                $td.removeClass('bookable').addClass('selected');
             },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -153,7 +154,7 @@ $reservationMustacheID = 'reservationMustache';
         });
     });
 
-    $sheet.delegate('.days.selected' , 'click',  function () {
+    $sheet.delegate('.selected', 'click', function () {
         var self = $(this);
         var $td = self.closest('td');
         var dataID = self.find('div.inside').attr('data-id');
@@ -168,7 +169,7 @@ $reservationMustacheID = 'reservationMustache';
             data: sendAction,
             success: function(response) {
                 $($resList).find("[data-id='" + response + "']").remove();
-                $td.removeClass('selected').addClass('empty');
+                $td.removeClass('selected').addClass('bookable');
             },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -192,7 +193,7 @@ $reservationMustacheID = 'reservationMustache';
             data: sendAction,
             success: function(response) {
                 $li.remove();
-                $($sheet).find("[data-id='" + response + "']").closest('td').removeClass('selected').addClass('empty');
+                $($sheet).find("[data-id='" + response + "']").closest('td').removeClass('selected').addClass('bookable');
              },
             error: function(xhr, error) {
                 console.log('Error', error);

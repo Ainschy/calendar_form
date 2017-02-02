@@ -25,8 +25,6 @@ namespace CalendarBookingAjax;
  * @package    Devtools
  */
 
-use \Contao\Date;
-
 class ModuleCalendarBookingAjax extends \System
 {
     /**
@@ -36,15 +34,24 @@ class ModuleCalendarBookingAjax extends \System
     /**
      * @var integer
      */
-    protected $ffid;
+    protected $ffID;
     /**
      * @var integer
      */
     protected $Date;
+
+    protected $objFFM;
+    /**
+     * @var
+     */
+    protected $ft;
+
     /**
 	 * Generate the module
 	 */
-	public function __construct()
+
+
+    public function __construct()
 	{
         $this->Import('Database');
         $this->Import('Session');
@@ -92,24 +99,28 @@ class ModuleCalendarBookingAjax extends \System
      * @param string $ft
      * @return bool
      */
-    public function checkFT( $ft = '' )
+    public function setFT($ft)
     {
         if (!$ft) return false;
-        return (is_array($this->FormBooking[$ft])) ? true : false ;
+
+        if ((is_array($this->FormBooking[$ft]))) {
+            $this->ffID = $this->FormBooking[$ft]['fieldID'];
+            $this->objFFM = \FormFieldModel::findById($this->ffID);
+            $this->ft = $ft;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * @param int $ft
      * @return array|bool
      */
-    public function getCalanderSheet($ft = 0)
+    public function getCalanderSheet()
     {
-        if(!$ft) return false;
-        $this->ft = $ft;
-
-        $objFF = \FormFieldModel::findById($this->FormBooking[$this->ft]['fieldID']);
         $this->Date = new \Date($this->FormBooking[$this->ft]['current'],"Ym");
-        $this->cal_startDay = $objFF->cal_startDay;
+        $this->cal_startDay = $this->objFFM->cal_startDay;
 
         return $this->generateSheet();
     }
@@ -118,11 +129,8 @@ class ModuleCalendarBookingAjax extends \System
      * @param int $ft
      * @return bool
      */
-    public function getReservations($ft = 0)
+    public function getReservations()
     {
-        if(!$ft) return false;
-        $this->ft = $ft;
-
         return $this->FormBooking[$this->ft]['reservation'];
     }
 
@@ -130,13 +138,9 @@ class ModuleCalendarBookingAjax extends \System
      * @param int $ft
      * @return array|bool
      */
-    public function changeMonth($ft = 0)
+    public function changeMonth()
     {
-        if( !$ft || !is_numeric(\Input::post('data-id')) ) return false;
-        $this->ft = $ft;
-
-        $objFF = \FormFieldModel::findById($this->FormBooking[$this->ft]['fieldID']);
-        $this->cal_startDay = $objFF->cal_startDay;
+        if (!is_numeric(\Input::post('data-id'))) return false;
         $this->Date = new \Date(\Input::post('data-id'),"Ym");
         $this->FormBooking[$this->ft]['current'] = \Input::post('data-id');
 
@@ -147,11 +151,10 @@ class ModuleCalendarBookingAjax extends \System
      * @param int $ft
      * @return bool
      */
-    public function addReservation($ft = 0)
+    public function addReservation()
     {
         $id = \Input::post('data-id');
-        if( !$ft || !is_numeric($id) ) return false;
-        $this->ft = $ft;
+        if (!is_numeric($id)) return false;
 
         if(is_array($this->FormBooking[$this->ft]['reservation']))
         {
@@ -197,11 +200,10 @@ class ModuleCalendarBookingAjax extends \System
      * @param int $ft
      * @return bool|mixed
      */
-    public function rmReservation($ft = 0)
+    public function rmReservation()
     {
         $id = \Input::post('data-id');
-        if( !$ft || !is_numeric($id) ) return false;
-        $this->ft = $ft;
+        if (!is_numeric($id)) return false;
 
         if(!is_array($this->FormBooking[$this->ft]['reservation'])) return false;
 
@@ -214,11 +216,10 @@ class ModuleCalendarBookingAjax extends \System
      * @param int $ft
      * @return bool|mixed
      */
-    public function changeOption($ft = 0)
+    public function changeOption()
     {
         $id = \Input::post('data-id');
-        if( !$ft || !is_numeric($id) ) return false;
-        $this->ft = $ft;
+        if (!is_numeric($id)) return false;
 
         if(!is_array($this->FormBooking[$this->ft]['reservation'])) return false;
 
@@ -233,7 +234,7 @@ class ModuleCalendarBookingAjax extends \System
     protected function generateSheet()
     {
         $intDaysInMonth = date('t', $this->Date->monthBegin);
-        $intFirstDayOffset = date('w', $this->Date->monthBegin) - $this->cal_startDay;
+        $intFirstDayOffset = date('w', $this->Date->monthBegin) - $this->objFFM->cal_startDay;
 
         if ($intFirstDayOffset < 0)
         {
@@ -263,7 +264,7 @@ class ModuleCalendarBookingAjax extends \System
             $strCol .= $col;
             $intWeek = floor(++$intColumnCount / 7);
             $intDay = $i - $intFirstDayOffset;
-            $intCurrentDay = ($i + $this->cal_startDay) % 7;
+            $intCurrentDay = ($i + $this->objFFM->cal_startDay) % 7;
 
             $strWeekClass = 'week_' . $intWeek;
 
@@ -280,23 +281,22 @@ class ModuleCalendarBookingAjax extends \System
                 $col++;
                 continue;
             }
-            //$tag = \Date::parse("D",$this->Date->tstamp + (86400 * $intDay-1));
             $intKey = date('Ym', $this->Date->tstamp) . ((strlen($intDay) < 2) ? '0' . $intDay : $intDay);
             $strClass .= ($intKey == date('Ymd')) ? ' today' : '';
-            $arrDays[$strWeekClass][$strCol]['label'] = $intDay;
-
-            if(is_array($this->FormBooking[$this->ft]['reservation']))
-            {
+            if ($intKey > date('Ymd')) {
+                $arrDays[$strWeekClass][$strCol]['day'] = $intKey;
+                $arrDays[$strWeekClass][$strCol]['label'] = $intDay;
                 if(array_key_exists($intKey,$this->FormBooking[$this->ft]['reservation']))
                 {
-                    $arrDays[$strWeekClass][$strCol]['class'] = 'days selected' . $strClass ;
+                    $arrDays[$strWeekClass][$strCol]['class'] = 'day selected' . $strClass;
                 } else {
-                    $arrDays[$strWeekClass][$strCol]['class'] = 'days empty' . $strClass ;
+                    $arrDays[$strWeekClass][$strCol]['class'] = 'day bookable' . $strClass;
                 }
-            } else {
-                $arrDays[$strWeekClass][$strCol]['class'] = 'days empty' . $strClass ;
+                $col++;
+                continue;
             }
-            $arrDays[$strWeekClass][$strCol]['day'] = $intKey;
+            $arrDays[$strWeekClass][$strCol]['class'] = 'day ' . $strClass;
+            $arrDays[$strWeekClass][$strCol]['label'] = $intDay;
             $col++;
         }
 

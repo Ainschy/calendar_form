@@ -7,15 +7,15 @@
  */
 
 /* Colors */
-.widget-calendar .empty {background: #f8f8f8;}
+.widget-calendar .day {
+    background: #f8f8f8;
+}
 .widget-calendar .free {background: #91CD01;}
 .widget-calendar .half {background: #ffed00;}
 .widget-calendar .full {background: red;}
 .widget-calendar .selected {background: #FFB300;}
 .widget-calendar .booked {background: #add9e6;}
 .widget-calendar .urlaub {background: #791173}
-
-
 
 .widget-calendar {
 	position: relative;
@@ -118,7 +118,6 @@
 }
 
 .widget-calendar #calendarWrapper .bookable,
-.widget-calendar #calendarWrapper .empty,
 .widget-calendar #calendarWrapper .selected
 {
 	cursor: pointer;
@@ -147,7 +146,7 @@
 	
 }
 
-.widget-calendar #calendarWrapper td.today
+.widget-calendar #calendarWrapper td.today .inside
 {
 	border: 1px dashed #333;
 }
