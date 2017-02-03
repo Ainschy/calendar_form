@@ -36,10 +36,8 @@ class ModuleCalendarBookingAjax extends \System
      */
     protected $ffID;
     /**
-     * @var integer
+     * @var
      */
-    protected $Date;
-
     protected $objFFM;
     /**
      * @var

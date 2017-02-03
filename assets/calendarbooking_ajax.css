@@ -217,12 +217,13 @@ ul#reservationList {
 	padding: 0;
 }
 ul#reservationList li {
-     line-height: 2.0em;
-     padding: 0 0.5em;
-     margin:0 0 0.5em;
-     border: 1px solid #dddddd;
-     position: relative;
-     min-width: 10em;
+    line-height: 2.0em;
+    padding: 0 0.5em 0 2.2em;
+    margin: 0 0 0.5em;
+    border: 1px solid #dddddd;
+    position: relative;
+    min-width: 10em;
+    display: inline-block;
 }
 ul#reservationList li span.datum {
     width: 7.5em;
@@ -248,14 +249,15 @@ ul#reservationList li input[type=radio]:checked + label{
 ul#reservationList li button{
     position: absolute;
     top: 0.25em;
-    right: 0.25em;
+    left: 0.25em;
     color: white;
     background-color: darkred;
-    border-radius: 0.8em;
-    height: 1.6em;
+    border-radius: 0.6em;
+    height: 1.2em;
     border-color: darkred;
     box-shadow: none;
     cursor: pointer;
-    width: 1.6em;
+    width: 1.3em;
     border-style: none;
+    font-size: 120%;
 }
