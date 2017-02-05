@@ -49,11 +49,7 @@ class formAjax extends \Frontend
     public function run()
     {
         try {
-
-            //parse_str(file_get_contents("php://input"), $input);
-
             $objResModel = new \CalendarBookingAjax\ModuleCalendarBookingAjax();
-
             if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft'))))
             {
                 switch(\Input::post('action'))

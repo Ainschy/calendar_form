@@ -13,13 +13,15 @@ $GLOBALS['TL_LANG']['tl_form_field']['cal_startDay'] = ['Wochenstart', 'Wählen 
 $GLOBALS['TL_LANG']['tl_form_field']['calForm'] = ['Kalenderdarstellung', 'Wählen die passende Darstellung aus.'];
 $GLOBALS['TL_LANG']['tl_form_field']['calForms']['month'] = 'Monat';
 $GLOBALS['TL_LANG']['tl_form_field']['calForms']['week']  = 'Woche';
-
+$GLOBALS['TL_LANG']['tl_form_field']['getCalender']['default'] = 'ohne Kalender';
 
 $GLOBALS['TL_LANG']['tl_form_field']['calLogicMonth'] = array('Max. Auswahl', 'Schränkt die maximal buchbaren Tage ein. 0=keine Einschränkung');
 $GLOBALS['TL_LANG']['tl_form_field']['calLogicWeek'] = array('Auswahlregel', 'Schränke die Auwahl ein.');
 $GLOBALS['TL_LANG']['tl_form_field']['calLogics']['onlyOne'] = '1 Termin';
 $GLOBALS['TL_LANG']['tl_form_field']['calLogics']['onePerDay'] = '1 Termin pro Tag';
 $GLOBALS['TL_LANG']['tl_form_field']['calLogics']['multiPerDay'] = 'x Termine pro Tag';
+
+$GLOBALS['TL_LANG']['tl_form_field']['calRange'] = array('Zeitraum', 'Start- und Enddatum bilden eine Zeitraum.');
 
 $GLOBALS['TL_LANG']['tl_form_field']['available'] = array('Auswahl (Uhrzeit/Minuten)', 'Uhrzeit und Dauer in Minuten. Format 08:00/60 bedeutet: 8.00 Uhr für 60 Minuten');
 $GLOBALS['TL_LANG']['tl_form_field']['exceptions'] = array('Ausnahmen (Datum von - bis)', 'Ausnahmen verhindern die Auswahl und Buchung an den betreffenden Tagen.');

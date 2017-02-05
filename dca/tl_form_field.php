@@ -4,7 +4,7 @@
 $GLOBALS['TL_DCA']['tl_form_field']['palettes']['form_calendar'] = '{type_legend},type,name,label;{calender_legend},selectCalendar,cal_startDay,calForm;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl';
 
 $GLOBALS['TL_DCA']['tl_form_field']['subpalettes'] = array(
-    'calForm_month' => 'calLogicMonth',
+    'calForm_month' => 'calLogicMonth,calRange',
     'calForm_week' => 'calLogicWeek,available,exceptions'
 );
 
@@ -14,10 +14,9 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['selectCalendar'] = array
 (
     'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['selectCalendar'],
     'exclude'                 => true,
-    'inputType'               => 'checkbox',
-    'options_callback'        => array('tl_myform_field', 'getCalendars'),
-    'eval'                    => array('mandatory'=>true, 'multiple'=>true),
-    'sql'                     => "blob NULL"
+    'inputType' => 'radio',
+    'options_callback' => array('tl_myform_field', 'getCalendar'),
+    'sql' => "smallint(5) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['cal_startDay'] = array
@@ -28,7 +27,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['cal_startDay'] = array
     'inputType'               => 'select',
     'options'                 => array(0, 1, 2, 3, 4, 5, 6),
     'reference'               => &$GLOBALS['TL_LANG']['DAYS'],
-    'eval'                    => array('tl_class'=>'w50'),
+    'eval' => array('tl_class' => 'clr w50'),
     'sql'                     => "smallint(5) unsigned NOT NULL default '1'"
 );
 
@@ -40,7 +39,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['calForm'] = array
     'inputType'               => 'select',
     'options'                 => array('month','week'),
     'reference'               => &$GLOBALS['TL_LANG']['tl_form_field']['calForms'],
-    'eval' => array('tl_class' => 'clr w50', 'submitOnChange' => true),
+    'eval' => array('tl_class' => 'w50', 'submitOnChange' => true),
     'sql'                     => "varchar(6) NOT NULL default 'month'"
 );
 
@@ -55,6 +54,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['calLogicWeek'] = array
     'eval' => array('tl_class' => 'clr w50'),
     'sql' => "varchar(6) NOT NULL default 'month'"
 );
+
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['calLogicMonth'] = array
 (
     'label' => &$GLOBALS['TL_LANG']['tl_form_field']['calLogicMonth'],
@@ -62,6 +62,16 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['calLogicMonth'] = array
     'inputType' => 'text',
     'eval' => array('tl_class' => 'clr w50', 'rgxp' => 'natural'),
     'sql' => "smallint(5) unsigned NOT NULL default '0'"
+);
+
+$GLOBALS['TL_DCA']['tl_form_field']['fields']['calRange'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_form_field']['calRange'],
+    'default' => 1,
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('tl_class' => 'w50 m12'),
+    'sql' => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['available'] = array
@@ -173,14 +183,14 @@ class tl_myform_field extends tl_form_field
      *
      * @return array
      */
-    public function getCalendars()
+    public function getCalendar()
     {
         if (!$this->User->isAdmin && !is_array($this->User->calendars))
         {
             return array();
         }
 
-        $arrCalendars = array();
+        $arrCalendars = array('0' => &$GLOBALS['TL_LANG']['tl_form_field']['getCalender']['default']);
         $objCalendars = $this->Database->execute("SELECT id, title FROM tl_calendar ORDER BY title");
 
         while ($objCalendars->next())

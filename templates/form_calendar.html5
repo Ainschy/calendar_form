@@ -11,7 +11,7 @@ $reservationMustacheID = 'reservationMustache';
 ?>
 <label><?= $this->label ?></label>
 <input type="hidden" name="<?= $this->name ?>" value="<?= $this->FormToken ?>" required>
-<div id="<?= $calendarID ?>"></div>
+    <div id="<?= $calendarID ?>" class="<?= $this->calForm ?>"></div>
 <div class="loadingContainer"></div>
 <ul id="<?= $reservationID ?>">
 </ul>
@@ -20,25 +20,17 @@ $reservationMustacheID = 'reservationMustache';
     <table class="table">
         <thead class="daylist">
         <tr class="row_0 days">
-            <th colspan="2" class="head prev"><a data-id="<%prev.id%>" class="prev">&lt; <%prev.label%></a></th>
-            <th colspan="3" class="head current"><%current.label%></th>
-            <th colspan="2" class="head next"><a data-id="<%next.id%>" class="next"><%next.label%> &gt;</a></th>
+            <th colspan="2" class="head prev"><?= $GLOBALS['CAL_FORM']['elements']['prev'] ?></th>
+            <th colspan="3" class="head current"><?= $GLOBALS['CAL_FORM']['elements']['current'] ?></th>
+            <th colspan="2" class="head next"><?= $GLOBALS['CAL_FORM']['elements']['next'] ?></th>
         </tr>
         <tr class="row_1 days">
-            <th class="label">Mo</th>
-            <th class="label">Di</th>
-            <th class="label">Mi</th>
-            <th class="label">Do</th>
-            <th class="label">Fr</th>
-            <th class="label weekend">Sa</th>
-            <th class="label weekend">So</th>
+            <%#head%><%{table_day}%><%/head%>
         </tr>
         </thead>
-        <tbody><?php for( $i=0; $i <= 5; $i++) : ?><?= "<%#week_".$i."%>"; ?>
-            <tr class="week"><?php for($j=1; $j <= 7; $j++) : ?>
-                <td class="<%col_<?= $j ?>.class%>"><div class="inside" data-id="<%col_<?= $j ?>.day%>"><%col_<?= $j ?>.label%></div></td>
-                <?php endfor; ?>
-            </tr><?= "<%/week_".$i."%>";?><?php endfor; ?>
+        <tbody><%#week%>
+        <tr class="week"><%#days%><%{day}%><%/days%></tr>
+        <%/week%>
         </tbody>
     </table>
 </script>
@@ -128,6 +120,15 @@ $reservationMustacheID = 'reservationMustache';
         var sendAction = {
             'action' : 'next',
             'data-id' : $a.attr('data-id')
+        };
+        sendAjax(sendAction);
+    });
+
+    $sheet.delegate('select.current', 'change', function () {
+        var value = $(this).val();
+        var sendAction = {
+            'action': 'next',
+            'data-id': value
         };
         sendAjax(sendAction);
     });

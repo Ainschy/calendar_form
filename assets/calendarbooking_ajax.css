@@ -1,12 +1,5 @@
 @charset "UTF-8";
-/**
- * Contao CSS
- * @package    	calendarWrappers
- * @file		calendar.css
- * @author     	Tim Gatzky <info@tim-gatzky.de>
- */
 
-/* Colors */
 .widget-calendar .day {
     background: #f8f8f8;
 }
@@ -56,6 +49,7 @@
 .widget-calendar #calendarWrapper th
 {
 	text-align: center;
+    vertical-align: middle;
 }
 
 .widget-calendar #calendarWrapper .head .clearall
@@ -79,12 +73,6 @@
 .widget-calendar #calendarWrapper .head ul.navigation li
 {
 	display: inline;
-}
-
-/* table */
-.widget-calendar #calendarWrapper table
-{
-	
 }
 
 .widget-calendar #calendarWrapper tbody td
@@ -185,15 +173,27 @@
   display: inline-block;
   background: #fefefe;
   padding: 0 15px;
-  
 }
 
-/* hide events, just show the colors */
-/* .mod_calendar_bookings #calendarWrapper .event_container {display: none;} */
+.widget-calendar select.current {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    border-radius: 0;
+    font-size: 1.2em;
+    color: inherit;
+    width: 100%;
+    font-weight: bold;
+    border: 0px;
+    padding: 0.5em 1em;
+    box-shadow: 0;
+    background-image: url(angle-down.png);
+    background-position: 92%;
+    background-repeat: no-repeat;
+}
 
-/**
- * Loading
- */
 .widget-calendar .loadingContainer
 {
 	position: absolute;
@@ -222,7 +222,6 @@ ul#reservationList li {
     margin: 0 0 0.5em;
     border: 1px solid #dddddd;
     position: relative;
-    min-width: 10em;
     display: inline-block;
 }
 ul#reservationList li span.datum {
@@ -248,16 +247,12 @@ ul#reservationList li input[type=radio]:checked + label{
 }
 ul#reservationList li button{
     position: absolute;
-    top: 0.25em;
-    left: 0.25em;
-    color: white;
-    background-color: darkred;
-    border-radius: 0.6em;
-    height: 1.2em;
-    border-color: darkred;
+    left: 0;
+    color: #60584d;
+    background-color: #eee9e7;
     box-shadow: none;
     cursor: pointer;
-    width: 1.3em;
     border-style: none;
     font-size: 120%;
+    line-height: 1.6em;
 }
