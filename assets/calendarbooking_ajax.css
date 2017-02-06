@@ -21,10 +21,15 @@
 	padding: 0;
 }
 
-.widget-calendar #calendarWrapper
+.widget-calendar #calendarWrapper.month
 {
 	position: relative;
 	width: 425px;
+}
+
+.widget-calendar #calendarWrapper.week {
+    position: relative;
+    width: 100%;
 }
 
 .widget-calendar #calendarWrapper .head
@@ -51,48 +56,33 @@
 	text-align: center;
     vertical-align: middle;
 }
-
-.widget-calendar #calendarWrapper .head .clearall
-{
-	float: none;
-	clear: both;
-  text-align: right;
-	cursor: pointer;
-  font-size: 0.8em;
-}
-
-/* navigation */
-.widget-calendar #calendarWrapper .head ul.navigation
-{
-	float: right;
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	text-align: right;
-}
-.widget-calendar #calendarWrapper .head ul.navigation li
-{
-	display: inline;
-}
-
 .widget-calendar #calendarWrapper tbody td
 {
 	display: table-cell;
-	vertical-align: middle;
-	text-align: center;
-	font-size: large;
 	border: 1px solid #ddd;
 	width: 14.2857%;
 	padding:0;
 }
 
-.widget-calendar #calendarWrapper tbody td .inside
-{
-	height: 55px;
-	line-height: 55px;
-	padding: 0 !important;
+.widget-calendar #calendarWrapper.month tbody td {
+    vertical-align: middle;
+    text-align: center;
+    font-size: large;
 }
 
+.widget-calendar #calendarWrapper tbody td .inside
+{
+    padding: 0 !important;
+}
+
+.widget-calendar #calendarWrapper.month tbody td .inside {
+	height: 55px;
+	line-height: 55px;
+}
+
+.widget-calendar #calendarWrapper.week tbody td .inside {
+
+}
 .widget-calendar #calendarWrapper tbody td .header
 {
 	padding: 5px;
@@ -109,70 +99,30 @@
 .widget-calendar #calendarWrapper .selected
 {
 	cursor: pointer;
-	
-	opacity: .8;
-	/*Transition*/
-	-webkit-transition: All 0.2s ease;-moz-transition: All 0.2s ease;-o-transition: All 0.2s ease;-ms-transition: All 0.2s ease;
-	transition: All 0.2s ease;
 
 }
-.widget-calendar #calendarWrapper .free:hover,
-.widget-calendar #calendarWrapper .member_allowed:hover
+
+.widget-calendar #calendarWrapper .today
 {
-	opacity: 1;
-	-webkit-transition: All 0.2s ease;-moz-transition: All 0.2s ease;-o-transition: All 0.2s ease;-ms-transition: All 0.2s ease;
-	transition: All 0.2s ease;
+    background-color: rgba(255, 249, 146, 0.25);
 }
 
-.widget-calendar #calendarWrapper .selected
-{
-	opacity: 1;
+.widget-calendar #calendarWrapper.week div.inside div {
+    font-size: 90%;
+    text-align: left;
+    line-height: 27px;
+    padding-left: 10px;
+    height: 27px;
+    border-bottom: 1px solid #d4cbc5;
+    display: block;
 }
 
-.widget-calendar #calendarWrapper .booked
-{
-	
+.widget-calendar #calendarWrapper.week td .inside div span {
+    font-size: 75%;
 }
 
-.widget-calendar #calendarWrapper td.today .inside
-{
-	border: 1px dashed #333;
-}
-
-.widget-calendar .navigation a 
-{
-  text-decoration: none !important;
-}
-
-.widget-calendar ul.navigation li a
-{
-  line-height: 16px;
-  padding: 0 5px;
-  background: #fefefe;
-  font-size: 0.9em;
-  display: inline-block;
-}
-
-.widget-calendar ul.navigation li a:hover
-{
-  background: none;
-}
-
-.widget-calendar .current 
-{
-  margin-left: 3px;
-}
-
-.widget-calendar .counter
-{
-  margin: 6px 0 0 3px;
-}
-
-.widget-calendar .counter  span.value 
-{
-  display: inline-block;
-  background: #fefefe;
-  padding: 0 15px;
+.widget-calendar #calendarWrapper.week td .inside div:last-of-type {
+    border-bottom: none;
 }
 
 .widget-calendar select.current {
@@ -200,7 +150,6 @@
 	top: 50%;
 	margin-top: -25px;
 	left: 50%;
-	margin-top: -25px;
 	width: 50px;
 	height: 50px;
 	z-index: 100; /* just to be sure */
@@ -219,32 +168,16 @@ ul#reservationList {
 ul#reservationList li {
     line-height: 2.0em;
     padding: 0 0.5em 0 2.2em;
-    margin: 0 0 0.5em;
+    margin: 0 0.5em 0.5em 0;
     border: 1px solid #dddddd;
     position: relative;
     display: inline-block;
 }
 ul#reservationList li span.datum {
-    width: 7.5em;
+    width: 12em;
     display: inline-block;
 }
-ul#reservationList li input[type=checkbox],
-ul#reservationList li input[type=radio]{
-    /*vertical-align: middle;*/
-	position: absolute;
-	clip: rect(0,0,0,0);
-}
-ul#reservationList li input[type=checkbox] + label,
-ul#reservationList li input[type=radio] + label{
-    display: inline;
-	background-color: inherit;
-	padding:0.5em;
-	margin:0;
-}
-ul#reservationList li input[type=checkbox]:checked + label,
-ul#reservationList li input[type=radio]:checked + label{
-	background-color: #FFB300;
-}
+
 ul#reservationList li button{
     position: absolute;
     left: 0;

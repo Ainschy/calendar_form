@@ -25,11 +25,15 @@ class FormCalendar extends \Widget
             $arrTermine = array();
             foreach($FormBooking[$input]['reservation'] as $reservation)
             {
-                $arrTermine[] = $reservation['datum'];
+                if ($this->calForm == 'week') {
+                    $arrTermine[] = $reservation['datum'] . ' ' . $reservation['min'] . "min";
+                } else {
+                    $arrTermine[] = $reservation['datum'];
+                }
             }
             unset($FormBooking[$input]);
             \Session::getInstance()->set('FormBooking',$FormBooking);
-            return implode(", ", $arrTermine);
+            return "\n" . implode(",\n", $arrTermine);
         }
     }
     public function parse($attributes = null)

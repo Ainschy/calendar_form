@@ -76,7 +76,7 @@ $reservationMustacheID = 'reservationMustache';
             error: function(xhr, error) {
                 console.log('Error', error);
                 console.log('XHR', xhr);
-                location.reload();
+                //location.reload();
             }
         });
     }
@@ -103,7 +103,9 @@ $reservationMustacheID = 'reservationMustache';
     }
     function appendReservation(response) {
         $resList.append(Mustache.render(resTemp, response));
-        console.log(response);
+        $('#<?= $reservationID ?> li').sort(function (a, b) {
+            return $(a).data('id') > $(b).data('id');
+        }).appendTo('#<?= $reservationID ?>');
     }
 
     $sheet.delegate('a.prev', 'click', function () {
@@ -133,15 +135,13 @@ $reservationMustacheID = 'reservationMustache';
         sendAjax(sendAction);
     });
 
-    $sheet.delegate('.bookable', 'click', function () {
+    $sheet.delegate('div.bookable', 'click', function () {
         var self = $(this);
-        var $td = self.closest('td');
-        var dataID = self.find('div.inside').attr('data-id');
+        var dataID = self.attr('data-id');
         var addRes = {
             'action' : 'addReservation',
             'data-id' : dataID
         };
-        if (dataID)
         var sendAction = $.extend(addRes, baseData);
         $.ajax({
             type: "post",
@@ -150,7 +150,7 @@ $reservationMustacheID = 'reservationMustache';
             success: function(response) {
                 if (response == 'false') return;
                 appendReservation(response);
-                $td.removeClass('bookable').addClass('selected');
+                $(self).removeClass('bookable').addClass('selected');
             },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -159,10 +159,9 @@ $reservationMustacheID = 'reservationMustache';
         });
     });
 
-    $sheet.delegate('.selected', 'click', function () {
+    $sheet.delegate('div.selected', 'click', function () {
         var self = $(this);
-        var $td = self.closest('td');
-        var dataID = self.find('div.inside').attr('data-id');
+        var dataID = self.attr('data-id');
         var rmRes = {
             'action' : 'rmReservation',
             'data-id' : dataID
@@ -174,7 +173,7 @@ $reservationMustacheID = 'reservationMustache';
             data: sendAction,
             success: function(response) {
                 $($resList).find("[data-id='" + response + "']").remove();
-                $td.removeClass('selected').addClass('bookable');
+                $(self).removeClass('selected').addClass('bookable');
             },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -198,7 +197,7 @@ $reservationMustacheID = 'reservationMustache';
             data: sendAction,
             success: function(response) {
                 $li.remove();
-                $($sheet).find("[data-id='" + response + "']").closest('td').removeClass('selected').addClass('bookable');
+                $($sheet).find("[data-id='" + response + "']").removeClass('selected').addClass('bookable');
              },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -207,32 +206,6 @@ $reservationMustacheID = 'reservationMustache';
         });
     });
 
-    $resList.delegate('.option', 'change', function () {
-        var self = $(this);
-        var $li = self.closest('li');
-        var dataID = $li.attr('data-id');
-        var value = self.val();
-        var rmRes = {
-            'action' : 'rmReservation'
-        };
-        console.log(value);
-        console.log(dataID);
-        /*
-        var sendAction = $.extend(rmRes, baseData);
-        $.ajax({
-            type: "post",
-            url : url,
-            data: sendAction,
-            success: function(response) {
-                $li.remove();
-                $($sheet).find("[data-id='" + response + "']").closest('td').removeClass('selected').addClass('empty');
-            },
-            error: function(xhr, error) {
-                console.log('Error', error);
-                console.log('XHR', xhr);
-            }
-        });*/
-    });
 </script>
 
 <?php $this->endblock(); ?>

@@ -84,49 +84,49 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['available'] = array
         'tl_class' => 'm12 clr',
         'columnFields' => array
         (
-            'monday' => array
+            'mon' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['monday'],
                 'exclude' => true,
                 'inputType' => 'text',
                 'eval' => array('style' => 'width:70px')
             ),
-            'tuesday' => array
+            'tue' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['tuesday'],
                 'exclude' => true,
                 'inputType' => 'text',
                 'eval' => array('style' => 'width:70px')
             ),
-            'wednesday' => array
+            'wed' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['wednesday'],
                 'exclude' => true,
                 'inputType' => 'text',
                 'eval' => array('style' => 'width:70px')
             ),
-            'thursday' => array
+            'thu' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['thursday'],
                 'exclude' => true,
                 'inputType' => 'text',
                 'eval' => array('style' => 'width:70px')
             ),
-            'friday' => array
+            'fri' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['friday'],
                 'exclude' => true,
                 'inputType' => 'text',
                 'eval' => array('style' => 'width:70px')
             ),
-            'saturday' => array
+            'sat' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['saturday'],
                 'exclude' => true,
                 'inputType' => 'text',
                 'eval' => array('style' => 'width:70px')
             ),
-            'sunday' => array
+            'sun' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['sunday'],
                 'exclude' => true,
