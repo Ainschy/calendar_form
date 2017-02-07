@@ -406,6 +406,7 @@ class ModuleCalendarBookingAjax extends \System
     }
 
     /**
+     * generate Array from Timetable with this bookable Options
      * @return array
      */
     protected function prepareAvailableTable()
@@ -429,16 +430,26 @@ class ModuleCalendarBookingAjax extends \System
         return $arrMap;
     }
 
+    /**
+     * add new reservation to session
+     * @return bool
+     */
     protected function addRes()
     {
         switch ($this->objFFM->calForm) {
             case 'month' :
                 $id = \Input::post('data-id');
                 $datum = new \Date($id, "Ymd");
+
+                if ($this->objFFM->calRange && ('2' == count($this->objFB->reservation))) {
+                    $key = key($this->objFB->reservation);
+                    unset($this->objFB->reservation[$key]);
+                }
                 $this->objFB->reservation[$id] = array(
                     'id' => $id,
                     'datum' => \Date::parse("D. d.m.Y", $datum->tstamp),
                 );
+                ksort($this->objFB->reservation);
                 return $this->objFB->reservation[$id];
                 break;
             case 'week' :
@@ -455,6 +466,10 @@ class ModuleCalendarBookingAjax extends \System
         return false;
     }
 
+    /**
+     * @param int $intTstamp
+     * @return string
+     */
     protected function getMin($intTstamp = 0)
     {
         if (!$intTstamp) return '';

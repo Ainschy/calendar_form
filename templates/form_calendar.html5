@@ -42,10 +42,11 @@ $reservationMustacheID = 'reservationMustache';
 </script>
 <script src="system/modules/calendarbookingajax/assets/mustache.min.js"></script>
 <script>
+    (function ($) {
     var url = "system/modules/calendarbookingajax/public/formAjax.php";
     var calTemp = $('#<?= $calendarMustacheID ?>').html();
     var resTemp = $('#<?= $reservationMustacheID ?>').html();
-
+        var setReload = '<?= ($this->calRange && ($this->calForm == 'month')) ? 'true' : 'false'; ?>';
     $sheet  = $('#<?= $calendarID ?>');
     $resList = $('#<?= $reservationID ?>');
 
@@ -62,7 +63,16 @@ $reservationMustacheID = 'reservationMustache';
         sendAjax(sendAction);
         loadReservations();
     });
-
+        function reloadAfterAdd() {
+            var sendAction = {
+                'action': 'initialLoad'
+            };
+            sendAjax(sendAction);
+            heightUL = $($resList).height();
+            $($resList).height(heightUL);
+            $($resList).empty();
+            loadReservations();
+        }
     function sendAjax(sa) {
         var sendAction = $.extend(sa,baseData);
         $.ajax({
@@ -76,7 +86,6 @@ $reservationMustacheID = 'reservationMustache';
             error: function(xhr, error) {
                 console.log('Error', error);
                 console.log('XHR', xhr);
-                //location.reload();
             }
         });
     }
@@ -97,7 +106,7 @@ $reservationMustacheID = 'reservationMustache';
             error: function(xhr, error) {
                 console.log('Error', error);
                 console.log('XHR', xhr);
-                location.reload();
+                //location.reload();
             }
         });
     }
@@ -108,7 +117,8 @@ $reservationMustacheID = 'reservationMustache';
         }).appendTo('#<?= $reservationID ?>');
     }
 
-    $sheet.delegate('a.prev', 'click', function () {
+        $($sheet).on("touchstart click", "a.prev", function (e) {
+            e.preventDefault();
         var $a = $(this).closest('a');
         var sendAction = {
             'action' : 'prev',
@@ -117,7 +127,8 @@ $reservationMustacheID = 'reservationMustache';
         sendAjax(sendAction);
     });
 
-    $sheet.delegate('a.next', 'click', function () {
+        $($sheet).on("touchstart click", "a.next", function (e) {
+            e.preventDefault();
         var $a = $(this).closest('a');
         var sendAction = {
             'action' : 'next',
@@ -126,7 +137,8 @@ $reservationMustacheID = 'reservationMustache';
         sendAjax(sendAction);
     });
 
-    $sheet.delegate('select.current', 'change', function () {
+        $($sheet).on("change", "select.current", function (e) {
+            e.preventDefault();
         var value = $(this).val();
         var sendAction = {
             'action': 'next',
@@ -135,7 +147,8 @@ $reservationMustacheID = 'reservationMustache';
         sendAjax(sendAction);
     });
 
-    $sheet.delegate('div.bookable', 'click', function () {
+        $($sheet).on("touchstart click", "div.<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>", function (e) {
+            e.preventDefault();
         var self = $(this);
         var dataID = self.attr('data-id');
         var addRes = {
@@ -150,7 +163,10 @@ $reservationMustacheID = 'reservationMustache';
             success: function(response) {
                 if (response == 'false') return;
                 appendReservation(response);
-                $(self).removeClass('bookable').addClass('selected');
+                $(self).removeClass('<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>').addClass('<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>');
+                if (setReload == 'true') {
+                    reloadAfterAdd();
+                }
             },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -159,7 +175,8 @@ $reservationMustacheID = 'reservationMustache';
         });
     });
 
-    $sheet.delegate('div.selected', 'click', function () {
+        $($sheet).on("touchstart click", "div.<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>", function (e) {
+            e.preventDefault();
         var self = $(this);
         var dataID = self.attr('data-id');
         var rmRes = {
@@ -173,7 +190,7 @@ $reservationMustacheID = 'reservationMustache';
             data: sendAction,
             success: function(response) {
                 $($resList).find("[data-id='" + response + "']").remove();
-                $(self).removeClass('selected').addClass('bookable');
+                $(self).removeClass('<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>').addClass('<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>');
             },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -182,7 +199,7 @@ $reservationMustacheID = 'reservationMustache';
         });
     });
 
-    $resList.delegate('.remove', 'click', function () {
+        $($resList).on("touchstart click", ".remove", function () {
         var self = $(this);
         var $li = self.closest('li');
         var dataID = self.attr('data-id');
@@ -197,7 +214,7 @@ $reservationMustacheID = 'reservationMustache';
             data: sendAction,
             success: function(response) {
                 $li.remove();
-                $($sheet).find("[data-id='" + response + "']").removeClass('selected').addClass('bookable');
+                $($sheet).find("[data-id='" + response + "']").removeClass('<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>').addClass('<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>');
              },
             error: function(xhr, error) {
                 console.log('Error', error);
@@ -206,6 +223,17 @@ $reservationMustacheID = 'reservationMustache';
         });
     });
 
+        $($sheet).on("mouseenter", "div.<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>", function () {
+            $(this).addClass('hover');
+        }).on("mouseleave", "div.<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>.hover", function () {
+            $(this).removeClass('hover');
+        });
+        $($sheet).on("mouseenter", "div.<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>", function () {
+            $(this).addClass('hover');
+        }).on("mouseleave", "div.<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>.hover", function () {
+            $(this).removeClass('hover');
+        });
+    })(jQuery);
 </script>
 
 <?php $this->endblock(); ?>
