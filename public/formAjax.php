@@ -74,6 +74,9 @@ class formAjax extends \Frontend
                     case 'changeOption' :
                         $response = $objResModel->changeOption();
                         break;
+                    case 'removeAll' :
+                        $response = $objResModel->removeAll();
+                        break;
                 }
                 header('HTTP/1.0 200 OK');
             } else {

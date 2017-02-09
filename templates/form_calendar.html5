@@ -3,6 +3,7 @@
 <?php $this->block('field'); ?>
 
 <?php // init Vars
+$this->loadLanguageFile('tl_form_field');
 $calendarID = 'calendarWrapper';
 $reservationID = 'reservationList';
 
@@ -12,11 +13,14 @@ $reservationMustacheID = 'reservationMustache';
 <label><?= $this->label ?></label>
 <input type="hidden" name="<?= $this->name ?>" value="<?= $this->FormToken ?>" required>
     <div id="<?= $calendarID ?>" class="<?= $this->calForm ?>"></div>
-<div class="loadingContainer"></div>
 <ul id="<?= $reservationID ?>">
 </ul>
 <?php $GLOBALS['TL_CSS'][] = 'system/modules/calendarbookingajax/assets/calendarbooking_ajax.css'; ?>
 <script type="text/template" id="<?= $calendarMustacheID ?>">
+    <div class="loadingContainer"></div>
+    <div class="removeAll">
+        <button type="button" class="removeAll"><?= $GLOBALS['TL_LANG']['tl_form_field']['removeAll'] ?></button>
+    </div>
     <table class="table">
         <thead class="daylist">
         <tr class="row_0 days">
@@ -68,8 +72,6 @@ $reservationMustacheID = 'reservationMustache';
                 'action': 'initialLoad'
             };
             sendAjax(sendAction);
-            heightUL = $($resList).height();
-            $($resList).height(heightUL);
             $($resList).empty();
             loadReservations();
         }
@@ -149,6 +151,7 @@ $reservationMustacheID = 'reservationMustache';
 
         $($sheet).on("touchstart click", "div.<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>", function (e) {
             e.preventDefault();
+            $($sheet).find('div.loadingContainer').show(250);
         var self = $(this);
         var dataID = self.attr('data-id');
         var addRes = {
@@ -173,10 +176,12 @@ $reservationMustacheID = 'reservationMustache';
                 console.log('XHR', xhr);
             }
         });
+            $($sheet).find('div.loadingContainer').hide(250);
     });
 
         $($sheet).on("touchstart click", "div.<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>", function (e) {
             e.preventDefault();
+            $($sheet).find('div.loadingContainer').show(250);
         var self = $(this);
         var dataID = self.attr('data-id');
         var rmRes = {
@@ -197,6 +202,7 @@ $reservationMustacheID = 'reservationMustache';
                 console.log('XHR', xhr);
             }
         });
+            $($sheet).find('div.loadingContainer').hide(250);
     });
 
         $($resList).on("touchstart click", ".remove", function () {
@@ -232,6 +238,28 @@ $reservationMustacheID = 'reservationMustache';
             $(this).addClass('hover');
         }).on("mouseleave", "div.<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>.hover", function () {
             $(this).removeClass('hover');
+        });
+        $($sheet).on("click", "button.removeAll", function () {
+            $($sheet).find('div.loadingContainer').show(250);
+            var remAll = {
+                'action': 'removeAll'
+            };
+            var sendAction = $.extend(remAll, baseData);
+            $.ajax({
+                type: "post",
+                url: url,
+                data: sendAction,
+                success: function (response) {
+                    if (response == true) {
+                        reloadAfterAdd();
+                    }
+                },
+                error: function (xhr, error) {
+                    console.log('Error', error);
+                    console.log('XHR', xhr);
+                }
+            });
+            $($sheet).find('div.loadingContainer').hide(250);
         });
     })(jQuery);
 </script>

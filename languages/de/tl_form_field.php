@@ -14,6 +14,9 @@ $GLOBALS['TL_LANG']['tl_form_field']['calForm'] = ['Kalenderdarstellung', 'Wähl
 $GLOBALS['TL_LANG']['tl_form_field']['calForms']['month'] = 'Monat';
 $GLOBALS['TL_LANG']['tl_form_field']['calForms']['week']  = 'Woche';
 $GLOBALS['TL_LANG']['tl_form_field']['getCalender']['default'] = 'ohne Kalender';
+$GLOBALS['TL_LANG']['tl_form_field']['calSetReservation']['1'] = 'eintragen ohne Aktivierung';
+$GLOBALS['TL_LANG']['tl_form_field']['calSetReservation']['2'] = 'eintragen mit Aktivierung';
+
 
 $GLOBALS['TL_LANG']['tl_form_field']['calLogicMonth'] = array('Max. Auswahl', 'Schränkt die maximal buchbaren Tage ein. 0=keine Einschränkung');
 $GLOBALS['TL_LANG']['tl_form_field']['calLogicWeek'] = array('Auswahlregel', 'Schränke die Auwahl ein.');
@@ -35,3 +38,5 @@ $GLOBALS['TL_LANG']['tl_form_field']['thursday'] = array('Donnerstags', '');
 $GLOBALS['TL_LANG']['tl_form_field']['friday'] = array('Freitags', '');
 $GLOBALS['TL_LANG']['tl_form_field']['saturday'] = array('Samstags', '');
 $GLOBALS['TL_LANG']['tl_form_field']['sunday'] = array('Sonntag', '');
+
+$GLOBALS['TL_LANG']['tl_form_field']['removeAll'] = 'Auswahl löschen';

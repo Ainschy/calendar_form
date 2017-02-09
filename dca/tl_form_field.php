@@ -1,11 +1,11 @@
 <?php
 
 
-$GLOBALS['TL_DCA']['tl_form_field']['palettes']['form_calendar'] = '{type_legend},type,name,label;{calender_legend},selectCalendar,cal_startDay,calForm;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl';
+$GLOBALS['TL_DCA']['tl_form_field']['palettes']['form_calendar'] = '{type_legend},type,name,label;{calender_legend},cal_startDay,calForm,exceptions,selectCalendar,calSetReservation;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl';
 
 $GLOBALS['TL_DCA']['tl_form_field']['subpalettes'] = array(
     'calForm_month' => 'calLogicMonth,calRange',
-    'calForm_week' => 'calLogicWeek,available,exceptions'
+    'calForm_week' => 'calLogicWeek,available'
 );
 
 $GLOBALS['TL_DCA']['tl_form_field']['palettes']['__selector__'][] = 'calForm';
@@ -16,6 +16,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['selectCalendar'] = array
     'exclude'                 => true,
     'inputType' => 'radio',
     'options_callback' => array('tl_myform_field', 'getCalendar'),
+    'eval' => array('tl_class' => 'clr w50'),
     'sql' => "smallint(5) unsigned NOT NULL default '0'"
 );
 
@@ -145,7 +146,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['exceptions'] = array
     'exclude' => true,
     'eval' => array
     (
-        'tl_class' => 'm12 clr',
+        'tl_class' => 'clr w50',
         'columnFields' => array
         (
             'startdate' => array
@@ -153,18 +154,30 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['exceptions'] = array
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['startdate'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('style' => 'width:68px', 'rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'wizard')
+                'eval' => array('style' => 'width:90px', 'rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'wizard')
             ),
             'enddate' => array
             (
                 'label' => &$GLOBALS['TL_LANG']['tl_form_field']['enddate'],
                 'exclude' => true,
                 'inputType' => 'text',
-                'eval' => array('style' => 'width:68px', 'rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'wizard')
+                'eval' => array('style' => 'width:90px', 'rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'wizard')
             ),
         ),
     ),
     'sql' => "blob NULL",
+);
+
+$GLOBALS['TL_DCA']['tl_form_field']['fields']['calSetReservation'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_form_field']['calSetReservation'],
+    'default' => 1,
+    'exclude' => true,
+    'inputType' => 'select',
+    'options' => array('1', '2'),
+    'reference' => &$GLOBALS['TL_LANG']['tl_form_field']['calSetReservation'],
+    'eval' => array('tl_class' => 'w50 m12', 'includeBlankOption' => true),
+    'sql' => "varchar(6) NOT NULL default '0'"
 );
 
 class tl_myform_field extends tl_form_field

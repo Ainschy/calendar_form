@@ -202,6 +202,15 @@ class ModuleCalendarBookingAjax extends \System
     }
 
     /**
+     * @return bool
+     */
+    public function removeAll()
+    {
+        $this->objFB->reservation = array();
+        return true;
+    }
+
+    /**
      * @return mixed
      */
     protected function getTableNavMonth()
@@ -327,18 +336,8 @@ class ModuleCalendarBookingAjax extends \System
                 continue;
             }
             $intKey = date('Ym', $this->Date->tstamp) . ((strlen($intDay) < 2) ? '0' . $intDay : $intDay);
-            $strClass .= ($intKey == date('Ymd')) ? ' today' : '';
-            if ($intKey > date('Ymd')) {
-                if (array_key_exists($intKey, $this->objFB->reservation))
-                {
-                    $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], 'day ' . $GLOBALS['CAL_FORM']['status_class']['selected'] . $strClass, $intKey, $intDay);
-                } else {
-                    $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], 'day ' . $GLOBALS['CAL_FORM']['status_class']['bookable'] . $strClass, $intKey, $intDay);
-                }
-                $col++;
-                continue;
-            }
-            $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], 'day ' . $strClass, '', $intDay);
+            $arrCR = $this->generateDayAndOptions($intKey);
+            $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], $arrCR['class'], $arrCR['id'], $arrCR['option']);
             $col++;
         }
         return $arrDays;
@@ -356,7 +355,7 @@ class ModuleCalendarBookingAjax extends \System
         $arrDays['head'] = $this->compileDays();
         for ($i = 0; $i <= 6; $i++) {
             $j = \Date::parse("Ymd", strtotime('+' . $i . ' days', $intWeekBegin));
-            $arrCR = $this->checkDayAndOptions($j);
+            $arrCR = $this->generateDayAndOptions($j);
             $arrDays['week'][0]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], $arrCR['class'], $arrCR['id'], $arrCR['option']);
         }
         return $arrDays;
@@ -366,38 +365,58 @@ class ModuleCalendarBookingAjax extends \System
      * @param int $intDay
      * @return array
      */
-    protected function checkDayAndOptions($intDay = 0)
+    protected function generateDayAndOptions($intDay = 0)
     {
         if (!$intDay) return array();
 
         $tstamp = new \Date($intDay, "Ymd");
-        $day = strtolower(date("D", $tstamp->tstamp));
-        $strOption = '';
-        foreach ($this->arrMap[$day] as $options) {
-            if (strlen($options['time']) == '4') {
-                if ($intDay > \Date::parse("Ymd", time())) {
-                    $intDayTime = $intDay . $options['time'];
-                    $strClass = (array_key_exists($intDay . $options['time'], $this->objFB->reservation)) ? 'selected' : 'bookable';
-                    $strOption .= sprintf($GLOBALS['CAL_FORM']['elements']['week_day'],
-                        $strClass,
-                        $intDayTime,
-                        $options['label']
-                    );
-                } else {
-                    $strOption .= sprintf($GLOBALS['CAL_FORM']['elements']['week_day'],
-                        $GLOBALS['CAL_FORM']['status_class']['notavailable'],
-                        '',
-                        $options['label']
-                    );
-                }
-
-            } else {
-                $strOption .= $GLOBALS['CAL_FORM']['elements']['empty'];
-            }
-        }
         $strClass = ($intDay == \Date::parse("Ymd", time())) ? ' today' : '';
+        if ($this->objFFM->calForm == 'week') {
+            $day = strtolower(date("D", $tstamp->tstamp));
+            $strOption = '';
+            foreach ($this->arrMap[$day] as $options) {
+                if (strlen($options['time']) == '4') {
+                    $intDayTime = $intDay . $options['time'];
+                    $tstDayTime = new \Date($intDayTime, "YmdHi");
+                    if ($tstamp->tstamp > time()) {
+                        $strOptionClass = (array_key_exists($intDay . $options['time'], $this->objFB->reservation)) ? 'selected' : 'bookable';
+                        if (!$this->checkExceptionList($tstDayTime->tstamp)) {
+                            $strOptionClass = $GLOBALS['CAL_FORM']['status_class']['blocked'];
+                            $intDayTime = '';
+                        }
+                        $strOption .= sprintf($GLOBALS['CAL_FORM']['elements']['week_day'],
+                            $strOptionClass,
+                            $intDayTime,
+                            $options['label']
+                        );
+                    } else {
+                        $strOptionClass = (!$this->checkExceptionList($tstDayTime->tstamp)) ? $GLOBALS['CAL_FORM']['status_class']['blocked'] : $GLOBALS['CAL_FORM']['status_class']['notavailable'];
+                        $strOption .= sprintf($GLOBALS['CAL_FORM']['elements']['week_day'],
+                            $strOptionClass,
+                            '',
+                            $options['label']
+                        );
+                    }
+
+                } else {
+                    $strOption .= $GLOBALS['CAL_FORM']['elements']['empty'];
+                }
+            }
+        } else {
+            if ($tstamp->tstamp > time()) {
+                if (!$this->checkExceptionList($tstamp->tstamp)) {
+                    $strClass .= $GLOBALS['CAL_FORM']['status_class']['blocked'];
+                    $intDay = '';
+                } else {
+                    $strClass .= (array_key_exists($intDay, $this->objFB->reservation)) ? 'selected' : 'bookable';
+                }
+            } else {
+                $intDay = '';
+            }
+            $strOption = \Date::parse("d", $tstamp->tstamp);
+        }
         $arrReturn = array(
-            'class' => 'day' . $strClass,
+            'class' => 'day ' . $strClass,
             'id' => $intDay,
             'option' => $strOption
         );
@@ -419,10 +438,13 @@ class ModuleCalendarBookingAjax extends \System
                     $explode = explode("/", $item);
                     $time = explode(":", $explode[0]);
                     $strTime = $time[0] . $time[1];
+                    $day_option_label = (strlen($explode[1]) > '0') ?
+                        $GLOBALS['CAL_FORM']['elements']['day_option_label_min'] :
+                        $GLOBALS['CAL_FORM']['elements']['day_option_label'];
                     $arrMap[$key][] = array(
                         'time' => $strTime,
                         'min' => $explode[1],
-                        'label' => sprintf($GLOBALS['CAL_FORM']['elements']['day_option_label'], $explode[0], $explode[1])
+                        'label' => sprintf($day_option_label, $explode[0], $explode[1])
                     );
                 }
             }
@@ -480,5 +502,20 @@ class ModuleCalendarBookingAjax extends \System
         $key = array_search($hour, array_column($this->arrMap[$day], 'time'));
 
         return $this->arrMap[$day][$key]['min'];
+    }
+
+    /**
+     * @param int $tstamp
+     * @return bool
+     */
+    protected function checkExceptionList($tstamp = 0)
+    {
+        $arrExceptions = unserialize($this->objFFM->exceptions);
+        if (is_array($arrExceptions) && $tstamp > 0) {
+            foreach ($arrExceptions as $exception) {
+                if ($exception['startdate'] <= $tstamp && $exception['enddate'] >= $tstamp) return false;
+            }
+        }
+        return true;
     }
 }

@@ -32,7 +32,8 @@ $GLOBALS['CAL_FORM']['elements']['month_format_current'] = 'F Y';
 $GLOBALS['CAL_FORM']['elements']['week_format_prev-next'] = 'W';
 $GLOBALS['CAL_FORM']['elements']['week_format_current'] = 'W';
 
-$GLOBALS['CAL_FORM']['elements']['day_option_label'] = '%s <span>%smin</span>';
+$GLOBALS['CAL_FORM']['elements']['day_option_label'] = '%s';
+$GLOBALS['CAL_FORM']['elements']['day_option_label_min'] = '%s <span>%smin</span>';
 
 $GLOBALS['CAL_FORM']['elements']['month_week'] = '<%#week%><tr class="week"><%{days}%></tr><%/week%>';
 $GLOBALS['CAL_FORM']['elements']['month_day'] = '<td><div class="inside %s" data-id="%s">%s</div></td>';
