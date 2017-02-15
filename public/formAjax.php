@@ -1,19 +1,23 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: Ainschy
- * Date: 12.01.2017
- * Time: 18:46
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @package   form_calendarBooking
+ * @author    Oliver Willmes
+ * @license   GNU/LGPL
+ * @copyright Oliver Willmes 2017
  */
 
-namespace CalendarBookingAjax;
+namespace Willmes;
 
 $arrPost = $_POST;
 unset($_POST);
 
 if (!defined('TL_SCRIPT')) {
-    define('TL_SCRIPT', 'system/modules/calendarbookingajax/public/formAjax.php');
+    define('TL_SCRIPT', 'system/modules/form_calendarBooking/public/formAjax.php');
 }
 
 if (!defined('TL_MODE')) {
@@ -49,7 +53,7 @@ class formAjax extends \Frontend
     public function run()
     {
         try {
-            $objResModel = new \CalendarBookingAjax\ModuleCalendarBookingAjax();
+            $objResModel = new \Willmes\calendarBookingAjax();
             if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft'))))
             {
                 switch(\Input::post('action'))

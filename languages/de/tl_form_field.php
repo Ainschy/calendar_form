@@ -1,6 +1,17 @@
 <?php
 
-$GLOBALS['TL_LANG']['FFL']['form_calendar'] = ['Buchungskalender', 'Stellt einen Buchungskalenader zu Verfügung.'];
+/**
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @package   form_calendarBooking
+ * @author    Oliver Willmes
+ * @license   GNU/LGPL
+ * @copyright Oliver Willmes 2017
+ */
+
+$GLOBALS['TL_LANG']['FFL']['form_calendarBooking'] = ['Buchungskalender', 'Stellt einen Buchungskalenader zu Verfügung.'];
 
 /**
  * Fields

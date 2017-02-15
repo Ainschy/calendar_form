@@ -5,13 +5,13 @@
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
- * @package   CalendarBookingAjax
+ * @package   form_calendarBooking
  * @author    Oliver Willmes
  * @license   GNU/LGPL
  * @copyright Oliver Willmes 2017
  */
 
-$GLOBALS['TL_FFL']['form_calendar'] = 'FormCalendar';
+$GLOBALS['TL_FFL']['form_calendarBookingAjax'] = 'form_calendarBooking';
 
 
 //define interactiv static form elements
