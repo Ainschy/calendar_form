@@ -1,0 +1,229 @@
+@charset "UTF-8";
+
+.widget-calendar .day {
+    background: #f8f8f8;
+}
+
+.widget-calendar .free {
+    background: #91CD01;
+}
+
+.widget-calendar .half {
+    background: #ffed00;
+}
+
+.widget-calendar .blocked {
+    background: red;
+}
+
+.widget-calendar .selected {
+    background: #FFB300;
+}
+
+.widget-calendar .booked {
+    background: #add9e6;
+}
+
+.widget-calendar .urlaub {
+    background: #791173
+}
+
+.widget-calendar {
+    position: relative;
+    min-height: 50px;
+}
+
+.widget-calendar p {
+    margin: 0;
+    padding: 0;
+}
+
+.widget-calendar > div.month {
+    position: relative;
+    width: 425px;
+}
+
+.widget-calendar > div.week {
+    position: relative;
+    width: 100%;
+}
+
+.widget-calendar table .head {
+    min-height: 50px;
+    width: inherit;
+}
+
+.widget-calendar table .head.current {
+    text-align: center;
+    font-weight: bold;
+}
+
+.widget-calendar table .head.prev a,
+.widget-calendar table .head.next a {
+    cursor: pointer;
+}
+
+.widget-calendar table .head.prev a:hover,
+.widget-calendar table .head.next a:hover {
+
+}
+
+.widget-calendar table th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.widget-calendar table tbody td {
+    display: table-cell;
+    border: 1px solid #ddd;
+    width: 14.2857% !important;
+    padding: 0;
+}
+
+.widget-calendar > div.month tbody td {
+    vertical-align: middle;
+    text-align: center;
+    font-size: large;
+}
+
+.widget-calendar table tbody td .inside {
+    padding: 0 !important;
+}
+
+.widget-calendar > div.month tbody td .inside {
+    height: 55px;
+    line-height: 55px;
+}
+
+.widget-calendar > div.week tbody td .inside {
+
+}
+
+.widget-calendar table tbody td .header {
+    padding: 5px;
+    text-align: right;
+}
+
+/* day */
+.widget-calendar table tbody td .header .text {
+    margin-right: 2px;
+}
+
+.widget-calendar table .bookable,
+.widget-calendar table .selected {
+    cursor: pointer;
+
+}
+
+.widget-calendar table .bookable.hover,
+.widget-calendar table .selected.hover {
+    background-color: rgba(255, 179, 0, 0.5);
+
+}
+
+.widget-calendar > div .today {
+    background-color: rgba(255, 249, 146, 0.25);
+}
+
+.widget-calendar > div.week div.inside div {
+    font-size: 90%;
+    text-align: left;
+    line-height: 27px;
+    padding-left: 10px;
+    height: 27px;
+    border-bottom: 1px solid #d4cbc5;
+    display: block;
+}
+
+.widget-calendar > div.week td .inside div span {
+    font-size: 75%;
+}
+
+.widget-calendar > div.week td .inside div:last-of-type {
+    border-bottom: none;
+}
+
+.widget-calendar select.current {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    border-radius: 0;
+    font-size: 1.2em;
+    color: inherit;
+    width: 100%;
+    font-weight: bold;
+    border: 0px;
+    padding: 0.5em 1em;
+    box-shadow: 0;
+    background-image: url(angle-down.png);
+    background-position: 92%;
+    background-repeat: no-repeat;
+}
+
+.widget-calendar .loadingContainer {
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    z-index: 100; /* just to be sure */
+    display: none;
+    background: white url(../assets/loadingAnimation.gif) no-repeat center center;
+
+    border-radius: 2px;
+    box-shadow: 0 0 10px #666;
+}
+
+.widget-calendar div.removeAll {
+    position: absolute;
+    right: 0;
+    top: -22px;
+}
+
+.widget-calendar button.removeAll {
+    border: 0;
+    background-color: transparent;
+    font-size: 80%;
+    color: #666;
+    cursor: pointer;
+}
+
+.widget-calendar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.widget-calendar ul li {
+    line-height: 28px;
+    padding: 0 0.5em 0 2.2em;
+    margin: 0 0.5em 0.5em 0;
+    border: 1px solid #dddddd;
+    position: relative;
+    display: inline-block;
+}
+
+.widget-calendar ul li span.datum {
+    width: 12em;
+    display: inline-block;
+}
+
+.widget-calendar ul li button {
+    position: absolute;
+    left: 0;
+    color: #60584d;
+    background-color: #eee9e7;
+    box-shadow: none;
+    cursor: pointer;
+    border-style: none;
+    font-size: 120%;
+    line-height: 28px;
+    height: 28px;
+    width: 20px;
+    margin: 0;
+    padding: 0;
+}

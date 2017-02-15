@@ -1,0 +1,67 @@
+<?php $this->extend('form_row'); ?>
+
+<?php $this->block('field'); ?>
+
+<?php // init Vars
+$this->loadLanguageFile('tl_form_field');
+$calendarID = 'calendarWrapper_' . $this->id;
+$reservationID = 'reservationList_' . $this->id;
+
+$calendarMustacheID = 'calendarMustache_' . $this->id;
+$reservationMustacheID = 'reservationMustache_' . $this->id;
+?>
+    <label><?= $this->label ?></label>
+    <input type="hidden" name="<?= $this->name ?>" value="<?= $this->FormToken ?>" required>
+    <div id="<?= $calendarID ?>" class="<?= $this->calForm ?>"></div>
+    <ul id="<?= $reservationID ?>">
+    </ul>
+<?php $GLOBALS['TL_CSS'][] = 'system/modules/form_calendarBooking/assets/form_calendarBooking.css|static'; ?>
+    <script type="text/template" id="<?= $calendarMustacheID ?>">
+        <div class="loadingContainer"></div>
+        <div class="removeAll">
+            <button type="button" class="removeAll"><?= $GLOBALS['TL_LANG']['tl_form_field']['removeAll'] ?></button>
+        </div>
+        <table class="table">
+            <thead class="daylist">
+            <tr class="row_0 days">
+                <th colspan="2" class="head prev"><?= $GLOBALS['CAL_FORM']['elements']['prev'] ?></th>
+                <th colspan="3" class="head current"><?= $GLOBALS['CAL_FORM']['elements']['current'] ?></th>
+                <th colspan="2" class="head next"><?= $GLOBALS['CAL_FORM']['elements']['next'] ?></th>
+            </tr>
+            <tr class="row_1 days">
+                <%#head%><%{table_day}%><%/head%>
+            </tr>
+            </thead>
+            <tbody><%#week%>
+            <tr class="week"><%#days%><%{day}%><%/days%></tr>
+            <%/week%>
+            </tbody>
+        </table>
+    </script>
+    <script type="text/template" id="<?= $reservationMustacheID ?>">
+        <li data-id="<%id%>">
+            <button type="button" data-id="<%id%>" class="remove">&times;</button>
+            <span class="datum"><%datum%></span><%#options%><%{option}%><%/options%>
+        </li>
+    </script>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/form_calendarBooking/assets/mustache.min.js|static' ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/form_calendarBooking/assets/calendarbooking.js|static' ?>
+    <script>
+        (function ($) {
+            $(document).ready(function () {
+                calendarbooking({
+                    setUrl: 'system/modules/form_calendarBooking/public/formAjax.php',
+                    calTemp: '#<?= $calendarMustacheID ?>',
+                    resTemp: '#<?= $reservationMustacheID ?>',
+                    setReload: '<?= ($this->calRange && ($this->calForm == 'month')) ? 'true' : 'false'; ?>',
+                    sheet: '#<?= $calendarID ?>',
+                    resList: '#<?= $reservationID ?>',
+                    bookable: '<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>',
+                    selector: '<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>',
+                    rt: '<?php echo \Requesttoken::get(); ?>',
+                    ft: '<?= $this->FormToken ?>'
+                });
+            });
+        })(jQuery);
+    </script>
+<?php $this->endblock(); ?>
