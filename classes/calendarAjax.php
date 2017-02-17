@@ -9,13 +9,13 @@ namespace Willmes;
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
- * @package   form_calendarBooking
+ * @package   calendar_form
  * @author    Oliver Willmes
  * @license   GNU/LGPL
  * @copyright Oliver Willmes 2017
  */
 
-class calendarBookingAjax extends \System
+class calendarAjax extends \System
 {
     /**
      * @var array
@@ -328,6 +328,7 @@ class calendarBookingAjax extends \System
     }
 
     /**
+     *
      * @return mixed
      */
     protected function generateWeek()

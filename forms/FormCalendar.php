@@ -5,14 +5,14 @@
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
- * @package   form_calendarBooking
+ * @package   calendar_form
  * @author    Oliver Willmes
  * @license   GNU/LGPL
  * @copyright Oliver Willmes 2017
  */
-class form_calendarBooking extends \Widget
+class FormCalendar extends \Widget
 {
-    protected $strTemplate = 'form_calendarBookingAjax';
+    protected $strTemplate = 'form_calendarAjax';
 
     protected $strPrefix = 'widget widget-calendar';
 
@@ -42,12 +42,12 @@ class form_calendarBooking extends \Widget
     {
         if (TL_MODE == 'BE') {
             $template = new BackendTemplate('be_wildcard');
-            $template->wildcard = '### BOOKING CALENDAR ###';
+            $template->wildcard = '### CALENDAR ###';
 
             return $template->parse();
         }
 
-        $formToken = new \Willmes\calendarBookingAjax();
+        $formToken = new \Willmes\calendarAjax();
         $this->FormToken = $formToken->genFT($this->id);
 
         return parent::parse($attributes);

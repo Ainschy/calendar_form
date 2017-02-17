@@ -15,7 +15,7 @@ $reservationMustacheID = 'reservationMustache_' . $this->id;
     <div id="<?= $calendarID ?>" class="<?= $this->calForm ?>"></div>
     <ul id="<?= $reservationID ?>">
     </ul>
-<?php $GLOBALS['TL_CSS'][] = 'system/modules/form_calendarBooking/assets/form_calendarBooking.css|static'; ?>
+<?php $GLOBALS['TL_CSS'][] = 'system/modules/calendar_form/assets/calendar.css|static'; ?>
     <script type="text/template" id="<?= $calendarMustacheID ?>">
         <div class="loadingContainer"></div>
         <div class="removeAll">
@@ -44,13 +44,13 @@ $reservationMustacheID = 'reservationMustache_' . $this->id;
             <span class="datum"><%datum%></span><%#options%><%{option}%><%/options%>
         </li>
     </script>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/form_calendarBooking/assets/mustache.min.js|static' ?>
-<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/form_calendarBooking/assets/calendarbooking.js|static' ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/calendar_form/assets/mustache.min.js|static' ?>
+<?php $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/calendar_form/assets/calendarbooking.js|static' ?>
     <script>
         (function ($) {
             $(document).ready(function () {
                 calendarbooking({
-                    setUrl: 'system/modules/form_calendarBooking/public/formAjax.php',
+                    setUrl: 'system/modules/calendar_form/public/formCalendarAjax.php',
                     calTemp: '#<?= $calendarMustacheID ?>',
                     resTemp: '#<?= $reservationMustacheID ?>',
                     setReload: '<?= ($this->calRange && ($this->calForm == 'month')) ? 'true' : 'false'; ?>',

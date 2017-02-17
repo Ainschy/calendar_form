@@ -5,13 +5,13 @@
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
- * @package   form_calendarBooking
+ * @package   calendar_form
  * @author    Oliver Willmes
  * @license   GNU/LGPL
  * @copyright Oliver Willmes 2017
  */
 
-$GLOBALS['TL_LANG']['FFL']['form_calendarBooking'] = ['Buchungskalender', 'Stellt einen Buchungskalenader zu Verfügung.'];
+$GLOBALS['TL_LANG']['FFL']['formcalendar'] = ['Kalender', 'Stellt einen Kalenderansicht zur Auswahl von Terminen bereit.'];
 
 /**
  * Fields

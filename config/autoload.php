@@ -24,13 +24,10 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Classes
-    'Willmes\calendarBookingAjax' => 'system/modules/form_calendarBooking/classes/calendarBookingAjax.php',
+    'Willmes\calendarAjax' => 'system/modules/calendar_form/classes/calendarAjax.php',
 
 	// Forms
-    'form_calendarBooking' => 'system/modules/form_calendarBooking/forms/form_calendarBooking.php',
-
-	// Public
-    'Willmes\formAjax' => 'system/modules/form_calendarBooking/public/formAjax.php',
+    'FormCalendar' => 'system/modules/calendar_form/forms/FormCalendar.php',
 ));
 
 
@@ -39,5 +36,5 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-    'form_calendarBookingAjax' => 'system/modules/form_calendarBooking/templates',
+    'form_calendarAjax' => 'system/modules/calendar_form/templates',
 ));

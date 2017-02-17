@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
- * @package   form_calendarBooking
+ * @package   calendar_form
  * @author    Oliver Willmes
  * @license   GNU/LGPL
  * @copyright Oliver Willmes 2017
@@ -13,11 +13,12 @@
 
 namespace Willmes;
 
+
 $arrPost = $_POST;
 unset($_POST);
 
 if (!defined('TL_SCRIPT')) {
-    define('TL_SCRIPT', 'system/modules/form_calendarBooking/public/formAjax.php');
+    define('TL_SCRIPT', 'system/modules/calendar_form/public/formCalendarAjax.php');
 }
 
 if (!defined('TL_MODE')) {
@@ -37,7 +38,6 @@ if (!defined('TL_MODE')) {
 $_POST = $arrPost;
 
 
-
 class formAjax extends \Frontend
 {
     public function __construct()
@@ -50,14 +50,13 @@ class formAjax extends \Frontend
         \System::loadLanguageFile('default');
         \Controller::setStaticUrls();
     }
+
     public function run()
     {
         try {
-            $objResModel = new \Willmes\calendarBookingAjax();
-            if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft'))))
-            {
-                switch(\Input::post('action'))
-                {
+            $objResModel = new \Willmes\calendarAjax();
+            if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft')))) {
+                switch (\Input::post('action')) {
                     case 'initialLoad' :
                         $response = $objResModel->getCalanderSheet();
                         break;
@@ -86,12 +85,13 @@ class formAjax extends \Frontend
             } else {
                 header('HTTP/1.0 409 Bad Request');
             }
-        } catch ( \Exception $e) {
+        } catch (\Exception $e) {
             header('HTTP/1.0 409 Bad Request');
         }
         header('Content-Type: application/json');
         echo json_encode($response);
     }
 }
+
 $formAjax = new formAjax();
 $formAjax->run();

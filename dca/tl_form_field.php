@@ -5,13 +5,13 @@
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
- * @package   form_calendarBookingAjax
+ * @package   calendar_form
  * @author    Oliver Willmes
  * @license   GNU/LGPL
  * @copyright Oliver Willmes 2017
  */
 
-$GLOBALS['TL_DCA']['tl_form_field']['palettes']['form_calendarBookingAjax'] = '{type_legend},type,name,label;{calender_legend},cal_startDay,calForm,exceptions,selectCalendar,calSetReservation;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl';
+$GLOBALS['TL_DCA']['tl_form_field']['palettes']['formcalendar'] = '{type_legend},type,name,label;{calender_legend},cal_startDay,calForm,exceptions,selectCalendar,calSetReservation;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl';
 
 $GLOBALS['TL_DCA']['tl_form_field']['subpalettes'] = array(
     'calForm_month' => 'calLogicMonth,calRange',
