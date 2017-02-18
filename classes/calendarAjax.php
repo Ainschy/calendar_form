@@ -94,7 +94,7 @@ class calendarAjax extends \System
     public function setFT($ft)
     {
         if (!$ft) return false;
-
+        $this->loadLanguageFile('tl_form_field');
         if ((is_array($this->FormBooking[$ft]))) {
             $this->ffID = $this->FormBooking[$ft]['fieldID'];
             $this->objFFM = \FormFieldModel::findById($this->ffID);
@@ -204,17 +204,17 @@ class calendarAjax extends \System
     {
 
         $arrHead['prev'] = array(
-            'label' => \Date::parse($GLOBALS['CAL_FORM']['elements']['month_format_prev-next'], $this->Date->monthBegin - 1),
+            'label' => \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_format_prev-next'], $this->Date->monthBegin - 1),
             'id' => \Date::parse("Ymd", $this->Date->monthBegin - 1)
         );
         $arrHead['next'] = array(
-            'label' => \Date::parse($GLOBALS['CAL_FORM']['elements']['month_format_prev-next'], $this->Date->monthEnd + 1),
+            'label' => \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_format_prev-next'], $this->Date->monthEnd + 1),
             'id' => \Date::parse("Ymd", $this->Date->monthEnd + 1)
         );
         for ($i = -$GLOBALS['CAL_FORM']['elements']['selectable_month']; $i <= $GLOBALS['CAL_FORM']['elements']['selectable_month']; $i++) {
             $newDate = new \Date(strtotime("+$i month", $this->Date->tstamp));
             $selected = ($this->objFB->current == \Date::parse("Ymd", $newDate->tstamp)) ? ' selected' : '';
-            $arrHead['current'][]['options'] = sprintf('<option value="%s" %s>%s</option>', \Date::parse("Ymd", $newDate->tstamp), $selected, \Date::parse($GLOBALS['CAL_FORM']['elements']['month_format_current'], $newDate->tstamp));
+            $arrHead['current'][]['options'] = sprintf('<option value="%s" %s>%s</option>', \Date::parse("Ymd", $newDate->tstamp), $selected, \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_format_current'], $newDate->tstamp));
         }
         return $arrHead;
     }
@@ -226,18 +226,18 @@ class calendarAjax extends \System
     {
 
         $arrHead['prev'] = array(
-            'label' => 'KW ' . \Date::parse($GLOBALS['CAL_FORM']['elements']['week_format_prev-next'], $this->Date->getWeekBegin($this->objFFM->cal_startDay) - 86400) . '',
+            'label' => 'KW ' . \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_prev-next'], $this->Date->getWeekBegin($this->objFFM->cal_startDay) - 86400) . '',
             'id' => \Date::parse("Ymd", $this->Date->getWeekBegin($this->objFFM->cal_startDay) - 86400)
         );
         $arrHead['next'] = array(
-            'label' => 'KW ' . \Date::parse($GLOBALS['CAL_FORM']['elements']['week_format_prev-next'], $this->Date->getWeekEnd($this->objFFM->cal_startDay) + 86400) . '',
+            'label' => 'KW ' . \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_prev-next'], $this->Date->getWeekEnd($this->objFFM->cal_startDay) + 86400) . '',
             'id' => \Date::parse("Ymd", $this->Date->getWeekEnd($this->objFFM->cal_startDay) + 86400)
         );
         for ($i = -$GLOBALS['CAL_FORM']['elements']['selectable_weeks']; $i <= $GLOBALS['CAL_FORM']['elements']['selectable_weeks']; $i++) {
             $newDate = new \Date(strtotime("+$i week", $this->Date->tstamp));
             $selected = ($this->objFB->current == \Date::parse("Ymd", $newDate->tstamp)) ? ' selected' : '';
-            $label = sprintf("KW %s (%s - %s)",
-                \Date::parse($GLOBALS['CAL_FORM']['elements']['week_format_current'], $newDate->tstamp),
+            $label = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_current'],
+                \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_current_option'], $newDate->tstamp),
                 \Date::parse("d.m.y", $newDate->getWeekBegin($this->objFFM->cal_startDay)),
                 \Date::parse("d.m.y", $newDate->getWeekEnd($this->objFFM->cal_startDay)));
             $arrHead['current'][]['options'] = sprintf('<option value="%s" %s>%s</option>', \Date::parse("Ymd", $newDate->tstamp), $selected, $label);
@@ -270,12 +270,12 @@ class calendarAjax extends \System
             switch ($this->objFFM->calForm) {
                 case 'week' :
                     $arrDays[]['table_day'] = sprintf(
-                        $GLOBALS['CAL_FORM']['elements']['table_days_week'],
+                        $GLOBALS['TL_LANG']['CAL_FORM']['elements']['table_days_week'],
                         $strClass, $GLOBALS['TL_LANG']['DAYS_SHORT'][$intCurrentDay],
                         \Date::parse("d.m.", $this->Date->getWeekBegin($this->objFFM->cal_startDay) + $intDayAtWeek));
                     break;
                 default :
-                    $arrDays[]['table_day'] = sprintf($GLOBALS['CAL_FORM']['elements']['table_days'], $strClass, $GLOBALS['TL_LANG']['DAYS_SHORT'][$intCurrentDay]);
+                    $arrDays[]['table_day'] = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['table_days'], $strClass, $GLOBALS['TL_LANG']['DAYS_SHORT'][$intCurrentDay]);
             }
             $intDayAtWeek += 86400;
         }
@@ -302,9 +302,7 @@ class calendarAjax extends \System
         $arrDays['head'] = $this->compileDays();
         $col = 1;
         for ($i = 1; $i <= ($intNumberOfRows * 7); $i++) {
-            $strCol = 'col_';
             if ($col > 7) $col = 1;
-            $strCol .= $col;
             $intWeek = floor(++$intColumnCount / 7);
             $intDay = $i - $intFirstDayOffset;
             $intCurrentDay = ($i + $this->objFFM->cal_startDay) % 7;
@@ -315,13 +313,13 @@ class calendarAjax extends \System
 
             // Empty cell
             if ($intDay < 1 || $intDay > $intDaysInMonth) {
-                $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], $strClass, '', '');
+                $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_day'], $strClass, '', '');
                 $col++;
                 continue;
             }
             $intKey = date('Ym', $this->Date->tstamp) . ((strlen($intDay) < 2) ? '0' . $intDay : $intDay);
             $arrCR = $this->generateDayAndOptions($intKey);
-            $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], $arrCR['class'], $arrCR['id'], $arrCR['option']);
+            $arrDays['week'][$intWeek]['days'][]['day'] = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_day'], $arrCR['class'], $arrCR['id'], $arrCR['option']);
             $col++;
         }
         return $arrDays;
@@ -341,7 +339,7 @@ class calendarAjax extends \System
         for ($i = 0; $i <= 6; $i++) {
             $j = \Date::parse("Ymd", strtotime('+' . $i . ' days', $intWeekBegin));
             $arrCR = $this->generateDayAndOptions($j);
-            $arrDays['week'][0]['days'][]['day'] = sprintf($GLOBALS['CAL_FORM']['elements']['month_day'], $arrCR['class'], $arrCR['id'], $arrCR['option']);
+            $arrDays['week'][0]['days'][]['day'] = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_day'], $arrCR['class'], $arrCR['id'], $arrCR['option']);
         }
         return $arrDays;
     }
@@ -369,14 +367,14 @@ class calendarAjax extends \System
                             $strOptionClass = $GLOBALS['CAL_FORM']['status_class']['blocked'];
                             $intDayTime = '';
                         }
-                        $strOption .= sprintf($GLOBALS['CAL_FORM']['elements']['week_day'],
+                        $strOption .= sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_day'],
                             $strOptionClass,
                             $intDayTime,
                             $options['label']
                         );
                     } else {
                         $strOptionClass = (!$this->checkExceptionList($tstDayTime->tstamp)) ? $GLOBALS['CAL_FORM']['status_class']['blocked'] : $GLOBALS['CAL_FORM']['status_class']['notavailable'];
-                        $strOption .= sprintf($GLOBALS['CAL_FORM']['elements']['week_day'],
+                        $strOption .= sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_day'],
                             $strOptionClass,
                             '',
                             $options['label']
@@ -384,16 +382,17 @@ class calendarAjax extends \System
                     }
 
                 } else {
-                    $strOption .= $GLOBALS['CAL_FORM']['elements']['empty'];
+                    $strOption .= $GLOBALS['TL_LANG']['CAL_FORM']['elements']['empty'];
                 }
             }
         } else {
             if ($tstamp->tstamp > time()) {
                 if (!$this->checkExceptionList($tstamp->tstamp)) {
-                    $strClass .= $GLOBALS['CAL_FORM']['status_class']['blocked'];
+                    $strClass .= ($this->objFFM->calChoise == 'selection') ? $GLOBALS['CAL_FORM']['status_class']['notavailable'] : $GLOBALS['CAL_FORM']['status_class']['blocked'];
                     $intDay = '';
                 } else {
-                    $strClass .= (array_key_exists($intDay, $this->objFB->reservation)) ? 'selected' : 'bookable';
+                    $strBook = ($this->objFFM->calChoise == 'selection') ? 'free' : 'bookable';
+                    $strClass .= (array_key_exists($intDay, $this->objFB->reservation)) ? 'selected' : $strBook;
                 }
             } else {
                 $intDay = '';
@@ -424,8 +423,8 @@ class calendarAjax extends \System
                     $time = explode(":", $explode[0]);
                     $strTime = $time[0] . $time[1];
                     $day_option_label = (strlen($explode[1]) > '0') ?
-                        $GLOBALS['CAL_FORM']['elements']['day_option_label_min'] :
-                        $GLOBALS['CAL_FORM']['elements']['day_option_label'];
+                        $GLOBALS['TL_LANG']['CAL_FORM']['elements']['day_option_label_min'] :
+                        $GLOBALS['TL_LANG']['CAL_FORM']['elements']['day_option_label'];
                     $arrMap[$key][] = array(
                         'time' => $strTime,
                         'min' => $explode[1],
@@ -498,9 +497,13 @@ class calendarAjax extends \System
         $arrExceptions = unserialize($this->objFFM->exceptions);
         if (is_array($arrExceptions) && $tstamp > 0) {
             foreach ($arrExceptions as $exception) {
-                if ($exception['startdate'] <= $tstamp && $exception['enddate'] >= $tstamp) return false;
+                if ($this->objFFM->calChoise == 'selection') {
+                    if ($exception['startdate'] <= $tstamp && $exception['enddate'] >= $tstamp) return true;
+                } else {
+                    if ($exception['startdate'] <= $tstamp && $exception['enddate'] >= $tstamp) return false;
+                }
             }
         }
-        return true;
+        return ($this->objFFM->calChoise == 'selection') ? false : true;
     }
 }

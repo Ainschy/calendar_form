@@ -1,32 +1,24 @@
 <?php $this->extend('form_row'); ?>
 
 <?php $this->block('field'); ?>
-
-<?php // init Vars
-$this->loadLanguageFile('tl_form_field');
-$calendarID = 'calendarWrapper_' . $this->id;
-$reservationID = 'reservationList_' . $this->id;
-
-$calendarMustacheID = 'calendarMustache_' . $this->id;
-$reservationMustacheID = 'reservationMustache_' . $this->id;
-?>
     <label><?= $this->label ?></label>
     <input type="hidden" name="<?= $this->name ?>" value="<?= $this->FormToken ?>" required>
-    <div id="<?= $calendarID ?>" class="<?= $this->calForm ?>"></div>
-    <ul id="<?= $reservationID ?>">
+    <div id="<?= 'calendarWrapper_' . $this->id ?>" class="<?= $this->calForm ?>"></div>
+    <ul id="<?= 'reservationList_' . $this->id ?>">
     </ul>
 <?php $GLOBALS['TL_CSS'][] = 'system/modules/calendar_form/assets/calendar.css|static'; ?>
-    <script type="text/template" id="<?= $calendarMustacheID ?>">
+    <script type="text/template" id="<?= 'calendarMustache_' . $this->id ?>">
         <div class="loadingContainer"></div>
         <div class="removeAll">
-            <button type="button" class="removeAll"><?= $GLOBALS['TL_LANG']['tl_form_field']['removeAll'] ?></button>
+            <button type="button"
+                    class="removeAll"><?= $GLOBALS['TL_LANG']['CAL_FORM']['elements']['removeAll'] ?></button>
         </div>
         <table class="table">
             <thead class="daylist">
             <tr class="row_0 days">
-                <th colspan="2" class="head prev"><?= $GLOBALS['CAL_FORM']['elements']['prev'] ?></th>
-                <th colspan="3" class="head current"><?= $GLOBALS['CAL_FORM']['elements']['current'] ?></th>
-                <th colspan="2" class="head next"><?= $GLOBALS['CAL_FORM']['elements']['next'] ?></th>
+                <th colspan="2" class="head prev"><?= $GLOBALS['TL_LANG']['CAL_FORM']['elements']['prev'] ?></th>
+                <th colspan="3" class="head current"><?= $GLOBALS['TL_LANG']['CAL_FORM']['elements']['current'] ?></th>
+                <th colspan="2" class="head next"><?= $GLOBALS['TL_LANG']['CAL_FORM']['elements']['next'] ?></th>
             </tr>
             <tr class="row_1 days">
                 <%#head%><%{table_day}%><%/head%>
@@ -38,7 +30,7 @@ $reservationMustacheID = 'reservationMustache_' . $this->id;
             </tbody>
         </table>
     </script>
-    <script type="text/template" id="<?= $reservationMustacheID ?>">
+    <script type="text/template" id="<?= 'reservationMustache_' . $this->id ?>">
         <li data-id="<%id%>">
             <button type="button" data-id="<%id%>" class="remove">&times;</button>
             <span class="datum"><%datum%></span><%#options%><%{option}%><%/options%>
@@ -51,12 +43,12 @@ $reservationMustacheID = 'reservationMustache_' . $this->id;
             $(document).ready(function () {
                 calendarbooking({
                     setUrl: 'system/modules/calendar_form/public/formCalendarAjax.php',
-                    calTemp: '#<?= $calendarMustacheID ?>',
-                    resTemp: '#<?= $reservationMustacheID ?>',
+                    calTemp: '#<?= 'calendarMustache_' . $this->id ?>',
+                    resTemp: '#<?= 'reservationMustache_' . $this->id ?>',
                     setReload: '<?= ($this->calRange && ($this->calForm == 'month')) ? 'true' : 'false'; ?>',
-                    sheet: '#<?= $calendarID ?>',
-                    resList: '#<?= $reservationID ?>',
-                    bookable: '<?= $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>',
+                    sheet: '#<?= 'calendarWrapper_' . $this->id ?>',
+                    resList: '#<?= 'reservationList_' . $this->id ?>',
+                    bookable: '<?= ($this->calChoise == 'selection') ? $GLOBALS['CAL_FORM']['status_class']['free'] : $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>',
                     selector: '<?= $GLOBALS['CAL_FORM']['status_class']['selected'] ?>',
                     rt: '<?php echo \Requesttoken::get(); ?>',
                     ft: '<?= $this->FormToken ?>'

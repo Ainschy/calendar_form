@@ -47,6 +47,7 @@ class FormCalendar extends \Widget
             return $template->parse();
         }
 
+        $this->loadLanguageFile('tl_form_field');
         $formToken = new \Willmes\calendarAjax();
         $this->FormToken = $formToken->genFT($this->id);
 

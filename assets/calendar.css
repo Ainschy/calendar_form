@@ -110,12 +110,13 @@
 }
 
 .widget-calendar table .bookable,
+.widget-calendar table .free,
 .widget-calendar table .selected {
     cursor: pointer;
-
 }
 
 .widget-calendar table .bookable.hover,
+.widget-calendar table .free.hover,
 .widget-calendar table .selected.hover {
     background-color: rgba(255, 179, 0, 0.5);
 
