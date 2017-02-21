@@ -29,10 +29,9 @@ $GLOBALS['TL_LANG']['tl_form_field']['getCalender']['default'] = 'ohne Kalender'
 $GLOBALS['TL_LANG']['tl_form_field']['calSetReservation']['1'] = 'eintragen ohne Aktivierung';
 $GLOBALS['TL_LANG']['tl_form_field']['calSetReservation']['2'] = 'eintragen mit Aktivierung';
 
-$GLOBALS['TL_LANG']['tl_form_field']['calChoise_label'] = ['Einstellung'];
-$GLOBALS['TL_LANG']['tl_form_field']['calChoise']['default'] = 'Auswahl';
-$GLOBALS['TL_LANG']['tl_form_field']['calChoise']['selection'] = 'Auswahl';
-$GLOBALS['TL_LANG']['tl_form_field']['calChoise']['exception'] = 'Ausnahmen';
+$GLOBALS['TL_LANG']['tl_form_field']['calChoise_label'] = ['Einschränkunen'];
+$GLOBALS['TL_LANG']['tl_form_field']['calChoise']['selection'] = 'Auswahl - nur definierte Termine sind auswählbar.';
+$GLOBALS['TL_LANG']['tl_form_field']['calChoise']['exception'] = 'Ausnahmen - Ausnahmen sind nicht buchbar, z.B. Urlaub/Feiertage';
 
 $GLOBALS['TL_LANG']['tl_form_field']['calLogicMonth'] = ['Max. Auswahl', 'Schränkt die maximal buchbaren Tage ein. 0=keine Einschränkung'];
 $GLOBALS['TL_LANG']['tl_form_field']['calLogicWeek'] = ['Auswahlregel', 'Schränke die Auwahl ein.'];
@@ -42,7 +41,7 @@ $GLOBALS['TL_LANG']['tl_form_field']['calLogics']['multiPerDay'] = 'x Termine pr
 
 $GLOBALS['TL_LANG']['tl_form_field']['calRange'] = ['Zeitraum', 'Start- und Enddatum bilden eine Zeitraum.'];
 
-$GLOBALS['TL_LANG']['tl_form_field']['available'] = ['Terminauswahl', 'Folgende Formate werden unterstützt: 08:00, 08:00/60, 08:00-09:00'];
+$GLOBALS['TL_LANG']['tl_form_field']['available'] = ['Auswahl definieren', 'Folgende Formate werden unterstützt: 08:00, 08:00/60, 08:00-09:00'];
 $GLOBALS['TL_LANG']['tl_form_field']['exceptions'] = ['Auswahl / Ausnahmen (Datum von - bis)', 'Auswahl / Ausnahmen definieren buchbare oder geblockte Zeiten'];
 $GLOBALS['TL_LANG']['tl_form_field']['startdate'] = ['Beginn', ''];
 $GLOBALS['TL_LANG']['tl_form_field']['enddate'] = ['Ende', ''];
