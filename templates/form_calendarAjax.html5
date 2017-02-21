@@ -45,7 +45,7 @@
                     setUrl: 'system/modules/calendar_form/public/formCalendarAjax.php',
                     calTemp: '#<?= 'calendarMustache_' . $this->id ?>',
                     resTemp: '#<?= 'reservationMustache_' . $this->id ?>',
-                    setReload: '<?= ($this->calRange && ($this->calForm == 'month')) ? 'true' : 'false'; ?>',
+                    setReload: '<?= ($this->calChoise != 'selection' && $this->calRange && ($this->calForm == 'month') || $this->calLogicMonth > 0) ? 'true' : 'false'; ?>',
                     sheet: '#<?= 'calendarWrapper_' . $this->id ?>',
                     resList: '#<?= 'reservationList_' . $this->id ?>',
                     bookable: '<?= ($this->calChoise == 'selection') ? $GLOBALS['CAL_FORM']['status_class']['free'] : $GLOBALS['CAL_FORM']['status_class']['bookable'] ?>',

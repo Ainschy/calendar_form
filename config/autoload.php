@@ -24,7 +24,8 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Classes
-    'Willmes\calendarAjax' => 'system/modules/calendar_form/classes/calendarAjax.php',
+    'Willmes\CalendarAjax' => 'system/modules/calendar_form/classes/CalendarAjax.php',
+    'Willmes\calendarAjaxFree' => 'system/modules/calendar_form/classes/calendarAjaxFree.php',
 
 	// Forms
     'FormCalendar' => 'system/modules/calendar_form/forms/FormCalendar.php',

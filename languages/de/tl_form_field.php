@@ -42,10 +42,13 @@ $GLOBALS['TL_LANG']['tl_form_field']['calLogics']['multiPerDay'] = 'x Termine pr
 
 $GLOBALS['TL_LANG']['tl_form_field']['calRange'] = ['Zeitraum', 'Start- und Enddatum bilden eine Zeitraum.'];
 
-$GLOBALS['TL_LANG']['tl_form_field']['available'] = ['Auswahl (Uhrzeit/Minuten)', 'Uhrzeit und Dauer in Minuten. Format 08:00/60 bedeutet: 8.00 Uhr für 60 Minuten'];
+$GLOBALS['TL_LANG']['tl_form_field']['available'] = ['Terminauswahl', 'Folgende Formate werden unterstützt: 08:00, 08:00/60, 08:00-09:00'];
 $GLOBALS['TL_LANG']['tl_form_field']['exceptions'] = ['Auswahl / Ausnahmen (Datum von - bis)', 'Auswahl / Ausnahmen definieren buchbare oder geblockte Zeiten'];
 $GLOBALS['TL_LANG']['tl_form_field']['startdate'] = ['Beginn', ''];
 $GLOBALS['TL_LANG']['tl_form_field']['enddate'] = ['Ende', ''];
+
+$GLOBALS['TL_LANG']['tl_form_field']['calOutput'] = ['Datumsformat in der Email', 'Der Datumsformat-String wird mit der PHP-Funktion date() geparst.'];
+$GLOBALS['TL_LANG']['tl_form_field']['calOutputTime'] = ['Zeitformat in der Email', 'Der Zeitformat-String wird mit der PHP-Funktion date() geparst.'];
 
 $GLOBALS['TL_LANG']['tl_form_field']['monday'] = ['Montags', ''];
 $GLOBALS['TL_LANG']['tl_form_field']['tuesday'] = ['Dienstags', ''];
@@ -71,6 +74,7 @@ $GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_day'] = '<div class="%s" data-
 
 $GLOBALS['TL_LANG']['CAL_FORM']['elements']['day_option_label'] = '%s';
 $GLOBALS['TL_LANG']['CAL_FORM']['elements']['day_option_label_min'] = '%s <span>%smin</span>';
+$GLOBALS['TL_LANG']['CAL_FORM']['elements']['day_option_label_end'] = '%s - %s';
 
 $GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_format_prev-next'] = 'M Y';
 $GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_format_current'] = 'F Y';

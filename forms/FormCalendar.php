@@ -10,6 +10,8 @@
  * @license   GNU/LGPL
  * @copyright Oliver Willmes 2017
  */
+use Willmes\calendarAjaxFree;
+
 class FormCalendar extends \Widget
 {
     protected $strTemplate = 'form_calendarAjax';
@@ -26,8 +28,8 @@ class FormCalendar extends \Widget
             ksort($FormBooking[$input]['reservation']);
             $arrTermine = array();
             foreach ($FormBooking[$input]['reservation'] as $reservation) {
-                if ($this->calForm == 'week') {
-                    $arrTermine[] = $reservation['datum'] . ' ' . $reservation['min'] . "min";
+                if ($this->calForm == 'week' && $reservation['min'] != '') {
+                    $arrTermine[] = $reservation['datum'] . ' - ' . $reservation['min'] . "min";
                 } else {
                     $arrTermine[] = $reservation['datum'];
                 }
@@ -36,6 +38,7 @@ class FormCalendar extends \Widget
             \Session::getInstance()->set('FormBooking', $FormBooking);
             return "\n" . implode(",\n", $arrTermine);
         }
+        return '';
     }
 
     public function parse($attributes = null)
@@ -47,8 +50,8 @@ class FormCalendar extends \Widget
             return $template->parse();
         }
 
-        $this->loadLanguageFile('tl_form_field');
-        $formToken = new \Willmes\calendarAjax();
+        \System::loadLanguageFile('tl_form_field');
+        $formToken = new calendarAjaxFree();
         $this->FormToken = $formToken->genFT($this->id);
 
         return parent::parse($attributes);

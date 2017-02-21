@@ -2,7 +2,9 @@
 /**
  * Namespace
  */
+
 namespace Willmes;
+
 
 /**
  * Contao Open Source CMS
@@ -15,26 +17,30 @@ namespace Willmes;
  * @copyright Oliver Willmes 2017
  */
 
-class calendarAjax extends \System
+abstract class CalendarAjax extends \System
 {
     /**
+     *
      * @var array
      */
     protected $FormBooking;
     /**
+     * formfieldID
      * @var integer
      */
     protected $ffID;
     /**
+     * formfield object
      * @object
      */
     protected $objFFM;
     /**
-     *
+     * reservation object
      * @object
      */
     protected $objFB;
     /**
+     * Formular Token
      * @var
      */
     protected $ft;
@@ -45,6 +51,7 @@ class calendarAjax extends \System
 
     public function __construct()
     {
+        parent::__construct();
         $this->Import('Database');
         $this->Import('Session');
         $this->Import('Input');
@@ -73,10 +80,11 @@ class calendarAjax extends \System
                     if ($value['fieldID'] == $id) return $ft;
                 }
             }
+            $this->objFFM = \FormFieldModel::findById($id);
             $newFT = md5(uniqid(mt_rand(), true));
             $this->FormBooking[$newFT] = array(
                 'fieldID' => $id,
-                'current' => \Date::parse("Ymd", time()),
+                'current' => \Date::parse("Ymd", $this->getInitialDate()),
                 'reservation' => []
             );
             return $newFT;
@@ -100,11 +108,6 @@ class calendarAjax extends \System
             $this->objFFM = \FormFieldModel::findById($this->ffID);
             $this->objFB = (object)$this->FormBooking[$ft];
             $this->ft = $ft;
-            switch ($this->objFFM->calForm) {
-                case 'week' :
-                    $this->arrMap = $this->prepareAvailableTable();
-                    break;
-            }
             return true;
         } else {
             return false;
@@ -117,13 +120,7 @@ class calendarAjax extends \System
      */
     public function getCalanderSheet()
     {
-        switch ($this->objFFM->calForm) {
-            case 'week' :
-                return $this->generateWeek();
-                break;
-            default :
-                return $this->generateSheet();
-        }
+        return $this->generateSheet();
     }
 
     /**
@@ -142,13 +139,7 @@ class calendarAjax extends \System
     {
         if (!is_numeric(\Input::post('data-id'))) return false;
         $this->objFB->current = \Input::post('data-id');
-        switch ($this->objFFM->calForm) {
-            case 'week' :
-                return $this->generateWeek();
-                break;
-            default :
-                return $this->generateSheet();
-        }
+        return $this->generateSheet();
     }
 
     /**
@@ -157,7 +148,6 @@ class calendarAjax extends \System
     public function addReservation()
     {
         if (!is_numeric(\Input::post('data-id'))) return false;
-
         return $this->addRes();
     }
 
@@ -169,7 +159,6 @@ class calendarAjax extends \System
         $id = \Input::post('data-id');
         if (!is_numeric($id)) return false;
         unset($this->objFB->reservation[$id]);
-
         return $id;
     }
 
@@ -220,32 +209,6 @@ class calendarAjax extends \System
     }
 
     /**
-     * @return mixed
-     */
-    protected function getTableNavWeek()
-    {
-
-        $arrHead['prev'] = array(
-            'label' => 'KW ' . \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_prev-next'], $this->Date->getWeekBegin($this->objFFM->cal_startDay) - 86400) . '',
-            'id' => \Date::parse("Ymd", $this->Date->getWeekBegin($this->objFFM->cal_startDay) - 86400)
-        );
-        $arrHead['next'] = array(
-            'label' => 'KW ' . \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_prev-next'], $this->Date->getWeekEnd($this->objFFM->cal_startDay) + 86400) . '',
-            'id' => \Date::parse("Ymd", $this->Date->getWeekEnd($this->objFFM->cal_startDay) + 86400)
-        );
-        for ($i = -$GLOBALS['CAL_FORM']['elements']['selectable_weeks']; $i <= $GLOBALS['CAL_FORM']['elements']['selectable_weeks']; $i++) {
-            $newDate = new \Date(strtotime("+$i week", $this->Date->tstamp));
-            $selected = ($this->objFB->current == \Date::parse("Ymd", $newDate->tstamp)) ? ' selected' : '';
-            $label = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_current'],
-                \Date::parse($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_format_current_option'], $newDate->tstamp),
-                \Date::parse("d.m.y", $newDate->getWeekBegin($this->objFFM->cal_startDay)),
-                \Date::parse("d.m.y", $newDate->getWeekEnd($this->objFFM->cal_startDay)));
-            $arrHead['current'][]['options'] = sprintf('<option value="%s" %s>%s</option>', \Date::parse("Ymd", $newDate->tstamp), $selected, $label);
-        }
-        return $arrHead;
-    }
-
-    /**
      * Return the week days and labels as array
      *
      * @return array
@@ -267,16 +230,7 @@ class calendarAjax extends \System
             if ($intCurrentDay == 0 || $intCurrentDay == 6) {
                 $strClass .= ' weekend';
             }
-            switch ($this->objFFM->calForm) {
-                case 'week' :
-                    $arrDays[]['table_day'] = sprintf(
-                        $GLOBALS['TL_LANG']['CAL_FORM']['elements']['table_days_week'],
-                        $strClass, $GLOBALS['TL_LANG']['DAYS_SHORT'][$intCurrentDay],
-                        \Date::parse("d.m.", $this->Date->getWeekBegin($this->objFFM->cal_startDay) + $intDayAtWeek));
-                    break;
-                default :
-                    $arrDays[]['table_day'] = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['table_days'], $strClass, $GLOBALS['TL_LANG']['DAYS_SHORT'][$intCurrentDay]);
-            }
+            $arrDays[]['table_day'] = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['table_days'], $strClass, $GLOBALS['TL_LANG']['DAYS_SHORT'][$intCurrentDay]);
             $intDayAtWeek += 86400;
         }
         return $arrDays;
@@ -326,25 +280,6 @@ class calendarAjax extends \System
     }
 
     /**
-     *
-     * @return mixed
-     */
-    protected function generateWeek()
-    {
-        $this->Date = new \Date($this->objFB->current, "Ymd");
-        $intWeekBegin = $this->Date->getWeekBegin($this->objFFM->cal_startDay);
-        $arrDays = $this->getTableNavWeek();
-
-        $arrDays['head'] = $this->compileDays();
-        for ($i = 0; $i <= 6; $i++) {
-            $j = \Date::parse("Ymd", strtotime('+' . $i . ' days', $intWeekBegin));
-            $arrCR = $this->generateDayAndOptions($j);
-            $arrDays['week'][0]['days'][]['day'] = sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['month_day'], $arrCR['class'], $arrCR['id'], $arrCR['option']);
-        }
-        return $arrDays;
-    }
-
-    /**
      * @param int $intDay
      * @return array
      */
@@ -354,51 +289,20 @@ class calendarAjax extends \System
 
         $tstamp = new \Date($intDay, "Ymd");
         $strClass = ($intDay == \Date::parse("Ymd", time())) ? ' today' : '';
-        if ($this->objFFM->calForm == 'week') {
-            $day = strtolower(date("D", $tstamp->tstamp));
-            $strOption = '';
-            foreach ($this->arrMap[$day] as $options) {
-                if (strlen($options['time']) == '4') {
-                    $intDayTime = $intDay . $options['time'];
-                    $tstDayTime = new \Date($intDayTime, "YmdHi");
-                    if ($tstamp->tstamp > time()) {
-                        $strOptionClass = (array_key_exists($intDay . $options['time'], $this->objFB->reservation)) ? 'selected' : 'bookable';
-                        if (!$this->checkExceptionList($tstDayTime->tstamp)) {
-                            $strOptionClass = $GLOBALS['CAL_FORM']['status_class']['blocked'];
-                            $intDayTime = '';
-                        }
-                        $strOption .= sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_day'],
-                            $strOptionClass,
-                            $intDayTime,
-                            $options['label']
-                        );
-                    } else {
-                        $strOptionClass = (!$this->checkExceptionList($tstDayTime->tstamp)) ? $GLOBALS['CAL_FORM']['status_class']['blocked'] : $GLOBALS['CAL_FORM']['status_class']['notavailable'];
-                        $strOption .= sprintf($GLOBALS['TL_LANG']['CAL_FORM']['elements']['week_day'],
-                            $strOptionClass,
-                            '',
-                            $options['label']
-                        );
-                    }
+        $strBook = ($this->objFFM->calChoise == 'selection') ? 'free' : 'bookable';
 
-                } else {
-                    $strOption .= $GLOBALS['TL_LANG']['CAL_FORM']['elements']['empty'];
-                }
+        if ($tstamp->tstamp > time()) {
+            if (!$this->checkExceptionList($tstamp->tstamp)) {
+                $strClass .= ($this->objFFM->calChoise == 'selection') ? $GLOBALS['CAL_FORM']['status_class']['notavailable'] : $GLOBALS['CAL_FORM']['status_class']['blocked'];
+                $intDay = '';
+            } else {
+                $strClass .= (array_key_exists($intDay, $this->objFB->reservation)) ? 'selected' : $strBook;
             }
         } else {
-            if ($tstamp->tstamp > time()) {
-                if (!$this->checkExceptionList($tstamp->tstamp)) {
-                    $strClass .= ($this->objFFM->calChoise == 'selection') ? $GLOBALS['CAL_FORM']['status_class']['notavailable'] : $GLOBALS['CAL_FORM']['status_class']['blocked'];
-                    $intDay = '';
-                } else {
-                    $strBook = ($this->objFFM->calChoise == 'selection') ? 'free' : 'bookable';
-                    $strClass .= (array_key_exists($intDay, $this->objFB->reservation)) ? 'selected' : $strBook;
-                }
-            } else {
-                $intDay = '';
-            }
-            $strOption = \Date::parse("d", $tstamp->tstamp);
+            $intDay = '';
         }
+        $strOption = \Date::parse("d", $tstamp->tstamp);
+
         $arrReturn = array(
             'class' => 'day ' . $strClass,
             'id' => $intDay,
@@ -409,83 +313,25 @@ class calendarAjax extends \System
     }
 
     /**
-     * generate Array from Timetable with this bookable Options
-     * @return array
-     */
-    protected function prepareAvailableTable()
-    {
-        $arrAvailable = unserialize($this->objFFM->available);
-        $arrMap = array();
-        if (is_array($arrAvailable)) {
-            foreach ($arrAvailable as $items) {
-                foreach ($items as $key => $item) {
-                    $explode = explode("/", $item);
-                    $time = explode(":", $explode[0]);
-                    $strTime = $time[0] . $time[1];
-                    $day_option_label = (strlen($explode[1]) > '0') ?
-                        $GLOBALS['TL_LANG']['CAL_FORM']['elements']['day_option_label_min'] :
-                        $GLOBALS['TL_LANG']['CAL_FORM']['elements']['day_option_label'];
-                    $arrMap[$key][] = array(
-                        'time' => $strTime,
-                        'min' => $explode[1],
-                        'label' => sprintf($day_option_label, $explode[0], $explode[1])
-                    );
-                }
-            }
-        }
-        return $arrMap;
-    }
-
-    /**
      * add new reservation to session
      * @return bool
      */
     protected function addRes()
     {
-        switch ($this->objFFM->calForm) {
-            case 'month' :
-                $id = \Input::post('data-id');
-                $datum = new \Date($id, "Ymd");
-
-                if ($this->objFFM->calRange && ('2' == count($this->objFB->reservation))) {
-                    $key = key($this->objFB->reservation);
-                    unset($this->objFB->reservation[$key]);
-                }
-                $this->objFB->reservation[$id] = array(
-                    'id' => $id,
-                    'datum' => \Date::parse("D. d.m.Y", $datum->tstamp),
-                );
-                ksort($this->objFB->reservation);
-                return $this->objFB->reservation[$id];
-                break;
-            case 'week' :
-                $id = \Input::post('data-id');
-                $datum = new \Date($id, "YmdHi");
-                $this->objFB->reservation[$id] = array(
-                    'id' => $id,
-                    'datum' => \Date::parse("D. d.m.Y H:i", $datum->tstamp) . ' Uhr',
-                    'min' => $this->getMin($datum->tstamp)
-                );
-                return $this->objFB->reservation[$id];
-                break;
+        $id = \Input::post('data-id');
+        $datum = new \Date($id, "Ymd");
+        if ($this->objFFM->calChoise != 'selection' && $this->objFFM->calRange && ('2' == count($this->objFB->reservation)) ||
+            ($this->objFFM->calLogicMonth > 0 && !$this->objFFM->calRange && ($this->objFFM->calLogicMonth <= count($this->objFB->reservation)))
+        ) {
+            $key = key($this->objFB->reservation);
+            unset($this->objFB->reservation[$key]);
         }
-        return false;
-    }
-
-    /**
-     * @param int $intTstamp
-     * @return string
-     */
-    protected function getMin($intTstamp = 0)
-    {
-        if (!$intTstamp) return '';
-
-        $day = strtolower(date("D", $intTstamp));
-        $hour = date("Hi", $intTstamp);
-
-        $key = array_search($hour, array_column($this->arrMap[$day], 'time'));
-
-        return $this->arrMap[$day][$key]['min'];
+        $this->objFB->reservation[$id] = array(
+            'id' => $id,
+            'datum' => \Date::parse($this->objFFM->calOutput, $datum->tstamp),
+        );
+        ksort($this->objFB->reservation);
+        return $this->objFB->reservation[$id];
     }
 
     /**
@@ -505,5 +351,23 @@ class calendarAjax extends \System
             }
         }
         return ($this->objFFM->calChoise == 'selection') ? false : true;
+    }
+
+    /**
+     * @param int $tstamp
+     * @return bool
+     */
+    protected function getInitialDate()
+    {
+        $tstamp = time();
+        $arrExceptions = unserialize($this->objFFM->exceptions);
+        if (is_array($arrExceptions)) {
+            foreach ($arrExceptions as $exception) {
+                if ($this->objFFM->calChoise == 'selection') {
+                    if ($exception['startdate'] >= $tstamp) return $exception['startdate'];
+                }
+            }
+        }
+        return $tstamp;
     }
 }

@@ -11,8 +11,6 @@
  * @copyright Oliver Willmes 2017
  */
 
-namespace Willmes;
-
 
 $arrPost = $_POST;
 unset($_POST);
@@ -37,6 +35,8 @@ if (!defined('TL_MODE')) {
 
 $_POST = $arrPost;
 
+use Willmes\calendarAjaxFree;
+use Willmes\calendarAjaxPro;
 
 class formAjax extends \Frontend
 {
@@ -49,12 +49,14 @@ class formAjax extends \Frontend
         define('FE_USER_LOGGED_IN', $this->getLoginStatus('FE_USER_AUTH'));
         \System::loadLanguageFile('default');
         \Controller::setStaticUrls();
+
     }
 
     public function run()
     {
+        $response = '';
         try {
-            $objResModel = new \Willmes\calendarAjax();
+            $objResModel = (in_array("calendar_form_pro", \Contao\ModuleLoader::getActive())) ? new calendarAjaxPro() : new calendarAjaxFree();
             if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft')))) {
                 switch (\Input::post('action')) {
                     case 'initialLoad' :

@@ -11,7 +11,7 @@
  * @copyright Oliver Willmes 2017
  */
 
-$GLOBALS['TL_DCA']['tl_form_field']['palettes']['formcalendar'] = '{type_legend},type,name,label;{calender_legend},cal_startDay,calForm,exceptions,calChoise;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl';
+$GLOBALS['TL_DCA']['tl_form_field']['palettes']['formcalendar'] = '{type_legend},type,name,label;{calender_legend},cal_startDay,calForm,exceptions,calChoise,calOutput;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl';
 
 $GLOBALS['TL_DCA']['tl_form_field']['subpalettes'] = array(
     'calForm_month' => 'calLogicMonth,calRange'
@@ -103,4 +103,13 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['exceptions'] = array
     'sql' => "blob NULL",
 );
 
+$GLOBALS['TL_DCA']['tl_form_field']['fields']['calOutput'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_form_field']['calOutput'],
+    'exclude' => true,
+    'default' => 'D. d.m.Y',
+    'inputType' => 'text',
+    'eval' => array('decodeEntities' => true, 'tl_class' => 'clr w50'),
+    'sql' => "varchar(32) NOT NULL default ''"
+);
 

@@ -1,5 +1,12 @@
 /**
- * Created by Ainschy on 15.02.2017.
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @package   calendar_form
+ * @author    Oliver Willmes
+ * @license   GNU/LGPL
+ * @copyright Oliver Willmes 2017
  */
 function calendarbooking(option) {
 
@@ -74,6 +81,7 @@ function calendarbooking(option) {
     }
 
     function appendReservation(response) {
+        $(resList).find("[data-id='" + response.id + "']").remove();
         $(resList).append(Mustache.render(resTemp, response));
         $(resList + ' li').sort(function (a, b) {
             return $(a).data('id') > $(b).data('id');
