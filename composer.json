@@ -1,0 +1,16 @@
+{
+  "name": "ainschy/calendar_form",
+  "description": "widget, formular, calendarsheet",
+  "type": "widget",
+  "require": {
+    "php": ">=5.5"
+  },
+  "license": "LGPL-3.0+",
+  "authors": [
+    {
+      "name": "Oliver Willmes",
+      "email": "info@oliverwillmes.de"
+    }
+  ],
+  "minimum-stability": "dev"
+}
