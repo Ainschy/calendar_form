@@ -14,7 +14,7 @@
  */
 ClassLoader::addNamespaces(array
 (
-	'CalendarBookingAjax',
+    'Willmes',
 ));
 
 
@@ -24,17 +24,11 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Classes
-	'CalendarBookingAjax\CalendarBookingModule'     => 'system/modules/calendarbookingajax/classes/CalendarBookingModule.php',
-	'CalendarBookingAjax\CalendarSheet'             => 'system/modules/calendarbookingajax/classes/CalendarSheet.php',
+    'Willmes\CalendarAjax' => 'system/modules/calendar_form/classes/CalendarAjax.php',
+    'Willmes\calendarAjaxFree' => 'system/modules/calendar_form/classes/calendarAjaxFree.php',
 
 	// Forms
-	'FormCalendar'                                  => 'system/modules/calendarbookingajax/forms/FormCalendar.php',
-
-	// Modules
-	'CalendarBookingAjax\ModuleCalendarBookingAjax' => 'system/modules/calendarbookingajax/modules/ModuleCalendarBookingAjax.php',
-
-	// Public
-	'CalendarBookingAjax\formAjax'                  => 'system/modules/calendarbookingajax/public/formAjax.php',
+    'FormCalendar' => 'system/modules/calendar_form/forms/FormCalendar.php',
 ));
 
 
@@ -43,6 +37,5 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'form_calendar'           => 'system/modules/calendarbookingajax/templates',
-	'mod_calendarBookingAjax' => 'system/modules/calendarbookingajax/templates',
+    'form_calendarAjax' => 'system/modules/calendar_form/templates',
 ));

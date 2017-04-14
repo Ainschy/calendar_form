@@ -1,19 +1,22 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: Ainschy
- * Date: 12.01.2017
- * Time: 18:46
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @package   calendar_form
+ * @author    Oliver Willmes
+ * @license   GNU/LGPL
+ * @copyright Oliver Willmes 2017
  */
 
-namespace CalendarBookingAjax;
 
 $arrPost = $_POST;
 unset($_POST);
 
 if (!defined('TL_SCRIPT')) {
-    define('TL_SCRIPT', 'system/modules/calendarbookingajax/public/formAjax.php');
+    define('TL_SCRIPT', 'system/modules/calendar_form/public/formCalendarAjax.php');
 }
 
 if (!defined('TL_MODE')) {
@@ -32,7 +35,8 @@ if (!defined('TL_MODE')) {
 
 $_POST = $arrPost;
 
-
+use Willmes\calendarAjaxFree;
+use Willmes\calendarAjaxPro;
 
 class formAjax extends \Frontend
 {
@@ -45,15 +49,16 @@ class formAjax extends \Frontend
         define('FE_USER_LOGGED_IN', $this->getLoginStatus('FE_USER_AUTH'));
         \System::loadLanguageFile('default');
         \Controller::setStaticUrls();
+
     }
+
     public function run()
     {
+        $response = '';
         try {
-            $objResModel = new \CalendarBookingAjax\ModuleCalendarBookingAjax();
-            if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft'))))
-            {
-                switch(\Input::post('action'))
-                {
+            $objResModel = (in_array("calendar_form_pro", \Contao\ModuleLoader::getActive())) ? new calendarAjaxPro() : new calendarAjaxFree();
+            if ((\Input::post('rt') == \RequestToken::get()) && (true == $objResModel->setFT(\Input::post('ft')))) {
+                switch (\Input::post('action')) {
                     case 'initialLoad' :
                         $response = $objResModel->getCalanderSheet();
                         break;
@@ -82,12 +87,13 @@ class formAjax extends \Frontend
             } else {
                 header('HTTP/1.0 409 Bad Request');
             }
-        } catch ( \Exception $e) {
+        } catch (\Exception $e) {
             header('HTTP/1.0 409 Bad Request');
         }
         header('Content-Type: application/json');
         echo json_encode($response);
     }
 }
+
 $formAjax = new formAjax();
 $formAjax->run();
