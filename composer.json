@@ -1,10 +1,13 @@
 {
   "name": "ainschy/calendar_form",
   "description": "widget, formular, calendarsheet",
-  "type": "widget",
-  "require": {
-    "php": ">=5.5"
-  },
+  "keywords": [
+    "widget",
+    "formular",
+    "calendarsheet",
+    "contao"
+  ],
+  "type": "contao-module",
   "license": "LGPL-3.0+",
   "authors": [
     {
@@ -12,5 +15,21 @@
       "email": "info@oliverwillmes.de"
     }
   ],
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.5",
+    "contao/core": ">=3.5.1,<4",
+    "contao-community-alliance/composer-plugin": "~2.4",
+    "menatwork/contao-multicolumnwizard": "~3"
+  },
+  "replace": {
+    "contao-legacy/calendar_form": "self.version"
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "": "system/modules/calendar_form"
+      }
+    }
+  }
 }
